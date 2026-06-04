@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OOP Inheritance — Game Characters</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/tomorrow-night.min.css">
+<script src="inheritance.js"></script>
+<style>
+  :root {
+    --bg-deep: #060818;
+    --bg-card: #0d1227;
+    --bg-panel: #111836;
+    --gold: #f0c040;
+    --gold-dim: #a07c20;
+    --cyan: #00e5ff;
+    --cyan-dim: #007a8a;
+    --purple: #9b59f5;
+    --purple-dim: #4a2a80;
+    --green: #39ff14;
+    --red: #ff4466;
+    --text: #c8d8f0;
+    --text-dim: #6a7a9a;
+    --border: #1e2e55;
+    --glow-gold: 0 0 18px #f0c04066;
+    --glow-cyan: 0 0 18px #00e5ff44;
+    --glow-purple: 0 0 18px #9b59f544;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, #1a0a3a22 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, #0a1a3a22 0%, transparent 60%);
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, #ffffff22 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 40%, #ffffff18 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 10%, #ffffff20 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 30%, #ffffff15 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 60%, #ffffff22 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 80%, #ffffff18 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 70%, #ffffff20 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 85%, #ffffff15 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 90%, #ffffff22 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 55%, #ffffff18 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── SITE HEADER ── */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #080c1aee;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(8px);
+    padding: 0 2rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .site-logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.95rem;
+    color: var(--gold);
+    text-shadow: var(--glow-gold);
+    letter-spacing: 1px;
+  }
+
+  .page-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .page-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .page-dot:hover { border-color: var(--cyan); color: var(--cyan); }
+  .page-dot.active { background: var(--purple); border-color: var(--purple); color: #fff; box-shadow: var(--glow-purple); }
+  .page-dot.visited { border-color: var(--gold-dim); color: var(--gold); }
+
+  /* ── LAYOUT ── */
+  .app-body {
+    display: flex;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    gap: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 200px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 72px;
+    align-self: flex-start;
+  }
+
+  .sidebar-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 4px;
+    border: 1px solid transparent;
+  }
+
+  .sidebar-item:hover { background: var(--bg-panel); }
+  .sidebar-item.active { background: var(--bg-card); border-color: var(--border); }
+
+  .sidebar-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    background: var(--bg-panel);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .sidebar-item.active .sidebar-num { background: var(--purple); color: #fff; border-color: var(--purple); }
+  .sidebar-item.visited .sidebar-num { background: transparent; color: var(--gold); border-color: var(--gold-dim); }
+
+  .sidebar-text { flex: 1; }
+  .sidebar-title { font-size: 0.78rem; font-weight: 500; color: var(--text); line-height: 1.3; }
+  .sidebar-sub { font-size: 0.68rem; color: var(--text-dim); margin-top: 2px; line-height: 1.3; }
+
+  /* ── MAIN ── */
+  .main-content { flex: 1; min-width: 0; }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-tag {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 3px;
+    color: var(--cyan);
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .page-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    color: var(--gold);
+    text-shadow: var(--glow-gold);
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
+  }
+
+  .page-subtitle {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--purple), var(--cyan), transparent);
+  }
+
+  .card-heading {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.72rem;
+    color: var(--cyan);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .card p {
+    line-height: 1.8;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .card p:last-child { margin-bottom: 0; }
+
+  .card ul {
+    margin: 10px 0 10px 20px;
+    color: var(--text);
+    font-size: 0.93rem;
+    line-height: 1.8;
+  }
+
+  .card code {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--cyan);
+    background: #0a1020;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: linear-gradient(135deg, #12102a, #1a1040);
+    border: 1px solid var(--purple-dim);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 14px 0;
+    font-size: 0.93rem;
+    line-height: 1.75;
+    color: #c0c8e8;
+  }
+
+  /* ── HIGHLIGHT ── */
+  .highlight {
+    background: #1a2545;
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 0.93rem;
+    color: #ddeeff;
+    line-height: 1.75;
+  }
+
+  .highlight strong { color: var(--gold); }
+
+  /* ── WARNING ── */
+  .warning-box {
+    background: #1a0f20;
+    border: 1px solid var(--purple-dim);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 0.91rem;
+    color: #b0a0d8;
+    line-height: 1.7;
+  }
+
+  .warning-box .warn-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.58rem;
+    color: var(--purple);
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .warning-box strong { color: var(--red); }
+
+  .expected-output {
+    background: #050f05;
+    border: 1px solid #39ff1466;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 14px 0;
+  }
+
+  .expected-output-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 2px;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+
+  .expected-output-pre {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.83rem;
+    line-height: 1.85;
+    color: #a0f0a0;
+    white-space: pre;
+    margin: 0;
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  /* ── NOTE ── */
+  .note-box {
+    background: #0a1525;
+    border: 1px solid var(--cyan-dim);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 0.88rem;
+    color: var(--cyan);
+    line-height: 1.65;
+  }
+
+  /* ── TERMS TABLE ── */
+  .terms-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  .terms-table th {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 2px;
+    color: var(--cyan);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+
+  .terms-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #161f3a;
+    color: var(--text);
+    line-height: 1.6;
+    vertical-align: top;
+  }
+
+  .terms-table td:first-child {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--gold);
+    white-space: nowrap;
+    font-size: 0.85rem;
+    width: 160px;
+  }
+
+  .terms-table tr:last-child td { border-bottom: none; }
+
+  /* ── BUILD STEP ── */
+  .build-card {
+    background: #050d1a;
+    border: 2px solid var(--gold-dim);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .build-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .build-badge {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .build-heading {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .build-instruction {
+    font-size: 0.93rem;
+    color: var(--text);
+    line-height: 1.75;
+    margin-bottom: 16px;
+  }
+
+  .build-instruction p { margin-bottom: 8px; }
+  .build-instruction p:last-child { margin-bottom: 0; }
+  .build-instruction strong { color: var(--gold); }
+  .build-instruction code {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--cyan);
+    background: #0a1020;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  /* ── CODE BLOCK ── */
+  .code-wrap {
+    position: relative;
+    margin: 14px 0;
+  }
+
+  .code-wrap pre {
+    background: #080c1a !important;
+    border: 1px solid #1e3060;
+    border-radius: 10px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.84rem;
+    line-height: 1.85;
+  }
+
+  .copy-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 1px;
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: var(--bg-panel);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  .copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+  /* ── EXPLAIN TABLE ── */
+  .explain-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 16px;
+    font-size: 0.86rem;
+  }
+
+  .explain-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #161f3a;
+    vertical-align: top;
+    line-height: 1.65;
+  }
+
+  .explain-table td:first-child {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--cyan);
+    white-space: nowrap;
+    width: 42%;
+    font-size: 0.8rem;
+  }
+
+  .explain-table td:last-child { color: var(--text); }
+  .explain-table tr:last-child td { border-bottom: none; }
+
+  /* ── FILE SNAPSHOT ── */
+  .snapshot-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-top: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .snapshot-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  }
+
+  .snapshot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .snapshot-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: var(--cyan);
+  }
+
+  .snapshot-copy-btn {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    padding: 7px 18px;
+    border-radius: 6px;
+    border: 1px solid var(--cyan-dim);
+    background: transparent;
+    color: var(--cyan);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .snapshot-copy-btn:hover { background: #0a2030; }
+  .snapshot-copy-btn.copied { border-color: var(--green); color: var(--green); }
+
+  .snapshot-wrap pre {
+    background: #080c1a !important;
+    border: 1px solid #1e3060;
+    border-radius: 8px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.85;
+  }
+
+  /* ── DOWNLOAD ── */
+  .download-section {
+    background: #0a1020;
+    border: 1px solid #00e5ff33;
+    border-radius: 14px;
+    padding: 28px;
+    margin-top: 24px;
+    text-align: center;
+  }
+
+  .download-eyebrow {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+
+  .download-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .download-desc {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 18px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .btn-download {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 12px 28px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--cyan-dim), var(--cyan));
+    color: #000;
+    box-shadow: var(--glow-cyan);
+    transition: all 0.2s;
+  }
+
+  .btn-download:hover { transform: translateY(-2px); }
+
+  /* ── NAV BUTTONS ── */
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 36px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn-nav {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    padding: 12px 26px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-prev {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+
+  .btn-prev:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  .btn-next {
+    background: linear-gradient(135deg, var(--purple-dim), var(--purple));
+    color: #fff;
+    box-shadow: var(--glow-purple);
+  }
+
+  .btn-next:hover { transform: translateY(-2px); box-shadow: 0 0 28px #9b59f566; }
+  .btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ── QUIZ ── */
+  .quiz-intro {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .quiz-intro-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.6rem;
+    color: var(--gold);
+    text-shadow: var(--glow-gold);
+    margin-bottom: 6px;
+  }
+
+  .quiz-intro-sub {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    color: var(--cyan);
+    letter-spacing: 3px;
+  }
+
+  .quiz-question {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .quiz-question::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .q-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.58rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .q-diff {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+
+  .q-code-block {
+    background: #080c1a;
+    border: 1px solid #1e3060;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.85;
+    color: #c3e88d;
+    margin: 10px 0;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .q-text {
+    font-size: 0.95rem;
+    color: #dde8ff;
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+
+  .q-text code {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--cyan);
+    background: #0a1020;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .quiz-option {
+    background: #0d1a30;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: var(--text);
+    transition: all 0.2s;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    text-align: left;
+  }
+
+  .quiz-option:hover:not(.locked):not(.correct):not(.wrong) {
+    border-color: var(--cyan);
+    color: #fff;
+    background: #111f3a;
+  }
+
+  .quiz-option.correct { border-color: var(--green); background: #0a1f10; color: var(--green); }
+  .quiz-option.wrong { border-color: var(--red); background: #1f0a10; color: var(--red); }
+  .quiz-option.locked { cursor: default; }
+
+  .option-letter {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    color: var(--gold);
+    min-width: 18px;
+    margin-top: 1px;
+  }
+
+  .option-code {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.78rem;
+    white-space: pre;
+    line-height: 1.7;
+  }
+
+  .quiz-feedback {
+    display: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+
+  .quiz-feedback.show.correct {
+    display: block;
+    background: #0a2010;
+    border: 1px solid var(--green);
+    color: var(--green);
+  }
+
+  .quiz-feedback.show.wrong {
+    display: block;
+    background: #200a10;
+    border: 1px solid var(--red);
+    color: #ff8899;
+  }
+
+  /* fill in blank */
+  .fill-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+
+  .fill-input {
+    flex: 1;
+    background: #0d1a30;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.88rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .fill-input:focus { border-color: var(--cyan); }
+  .fill-input.correct { border-color: var(--green); color: var(--green); }
+  .fill-input.wrong { border-color: var(--red); color: var(--red); }
+
+  .fill-btn {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--gold-dim);
+    background: transparent;
+    color: var(--gold);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .fill-btn:hover { background: #2a1a00; }
+  .fill-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── SCORE PANEL ── */
+  .score-panel {
+    display: none;
+    background: linear-gradient(135deg, #0d1227, #1a1040);
+    border: 1px solid var(--gold-dim);
+    border-radius: 14px;
+    padding: 36px;
+    text-align: center;
+    margin-top: 28px;
+  }
+
+  .score-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.5rem;
+    color: var(--gold);
+    text-shadow: var(--glow-gold);
+    margin-bottom: 16px;
+  }
+
+  .score-number {
+    font-family: 'Orbitron', monospace;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--cyan);
+    text-shadow: var(--glow-cyan);
+    margin-bottom: 10px;
+  }
+
+  .score-msg {
+    font-size: 1rem;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .screenshot-note {
+    background: #0a1525;
+    border: 1px solid var(--cyan-dim);
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    color: var(--cyan);
+    line-height: 1.7;
+  }
+
+  .btn-submit {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    padding: 14px 36px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+    color: #000;
+    font-weight: 700;
+    box-shadow: var(--glow-gold);
+    transition: all 0.2s;
+    display: block;
+    margin: 10px auto 0;
+  }
+
+  .btn-submit:hover { transform: translateY(-2px); }
+
+  /* ── BROKEN CODE ── */
+  .broken-card {
+    background: #0d0a1a;
+    border: 2px solid var(--purple-dim);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-top: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .broken-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--red), var(--purple), transparent);
+  }
+
+  .broken-badge {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 3px;
+    color: var(--red);
+    margin-bottom: 6px;
+  }
+
+  .broken-heading {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.85rem;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .broken-instruction {
+    font-size: 0.93rem;
+    color: var(--text);
+    line-height: 1.75;
+    margin-bottom: 16px;
+  }
+
+  .broken-instruction p { margin-bottom: 8px; }
+  .broken-instruction strong { color: var(--red); }
+
+  .hint-toggle {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+    padding: 8px 18px;
+    border-radius: 6px;
+    border: 1px solid var(--purple-dim);
+    background: transparent;
+    color: var(--purple);
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 12px;
+  }
+
+  .hint-toggle:hover { background: #1a0a2a; }
+
+  .hint-box {
+    display: none;
+    background: #1a0a2a;
+    border: 1px solid var(--purple-dim);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-top: 12px;
+    font-size: 0.88rem;
+    color: #b0a0d8;
+    line-height: 1.7;
+  }
+
+  .hint-box.visible { display: block; }
+
+  .lms-note {
+    background: #0a1525;
+    border: 1px solid var(--cyan-dim);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-top: 16px;
+    font-size: 0.88rem;
+    color: var(--cyan);
+    line-height: 1.65;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-logo" id="siteLogo">⚔️ OOP Quest</div>
+  <nav class="page-nav" id="pageNav"></nav>
+</header>
+
+<div class="app-body">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main-content" id="mainContent"></main>
+</div>
+
+<script>
+// ── STATE ──
+let currentPage = 0;
+const visited = new Set();
+let quizScores = {};
+let quizCorrect = {};
+
+// ── INIT ──
+function init() {
+  const icons = { inheritance: '⚔️', encapsulation: '🏀', polymorphism: '🎵' };
+  const icon = icons[TUTORIAL.id] || '⚔️';
+  document.getElementById('siteLogo').textContent = icon + ' OOP Quest — ' + TUTORIAL.title;
+  document.title = TUTORIAL.title;
+  renderNav();
+  renderSidebar();
+  goToPage(0);
+}
+
+// ── NAV DOTS ──
+function renderNav() {
+  const nav = document.getElementById('pageNav');
+  nav.innerHTML = TUTORIAL.pages.map((p, i) =>
+    `<button class="page-dot" id="dot${i}" onclick="goToPage(${i})" title="${p.title}">${i + 1}</button>`
+  ).join('');
+}
+
+function updateNav() {
+  TUTORIAL.pages.forEach((p, i) => {
+    const dot = document.getElementById(`dot${i}`);
+    dot.className = 'page-dot' + (i === currentPage ? ' active' : visited.has(i) ? ' visited' : '');
+  });
+}
+
+// ── SIDEBAR ──
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML = `<div class="sidebar-label">Pages</div>` +
+    TUTORIAL.pages.map((p, i) =>
+      `<div class="sidebar-item" id="sb${i}" onclick="goToPage(${i})">
+        <div class="sidebar-num">${i + 1}</div>
+        <div class="sidebar-text">
+          <div class="sidebar-title">${p.title}</div>
+          <div class="sidebar-sub">${p.subtitle}</div>
+        </div>
+      </div>`
+    ).join('');
+}
+
+function updateSidebar() {
+  TUTORIAL.pages.forEach((p, i) => {
+    const sb = document.getElementById(`sb${i}`);
+    sb.className = 'sidebar-item' + (i === currentPage ? ' active' : visited.has(i) ? ' visited' : '');
+  });
+}
+
+// ── NAVIGATION ──
+function goToPage(n) {
+  visited.add(currentPage);
+  currentPage = n;
+  updateNav();
+  updateSidebar();
+  renderPage(TUTORIAL.pages[n]);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── RENDER PAGE ──
+function renderPage(page) {
+  const main = document.getElementById('mainContent');
+
+  let html = `
+    <div class="page-header">
+      <span class="page-tag">PAGE ${page.pageNum} OF ${TUTORIAL.pages.length} &nbsp;·&nbsp; ${TUTORIAL.title.toUpperCase()}</span>
+      <h1 class="page-title">${page.title}</h1>
+      <p class="page-subtitle">${page.subtitle}</p>
+    </div>`;
+
+  // sections
+  if (page.sections && page.sections.length) {
+    page.sections.forEach(s => { html += renderSection(s); });
+  }
+
+  // quiz page
+  if (page.quiz) {
+    html += renderQuiz(page.quiz);
+  }
+
+  // snapshot
+  if (page.snapshot) {
+    html += renderSnapshot(page.snapshot, page.pageNum);
+  }
+
+  // download
+  if (page.download) {
+    html += renderDownload(page.download);
+  }
+
+  // nav buttons
+  html += `<div class="nav-buttons">`;
+  if (currentPage > 0) {
+    html += `<button class="btn-nav btn-prev" onclick="goToPage(${currentPage - 1})">← PREVIOUS</button>`;
+  } else {
+    html += `<span></span>`;
+  }
+  if (currentPage < TUTORIAL.pages.length - 1) {
+    html += `<button class="btn-nav btn-next" onclick="goToPage(${currentPage + 1})">NEXT PAGE →</button>`;
+  } else {
+    html += `<span></span>`;
+  }
+  html += `</div>`;
+
+  main.innerHTML = html;
+  main.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+}
+
+// ── RENDER SECTION ──
+function renderSection(s) {
+  if (s.type === 'terms') return renderTerms(s);
+  if (s.type === 'build') return renderBuild(s);
+  if (s.type === 'warning') return renderWarningSection(s);
+  return renderInfoSection(s);
+}
+
+function renderInfoSection(s) {
+  let h = `<div class="card"><div class="card-heading">${s.heading}</div>`;
+  if (s.content) h += `<div>${s.content}</div>`;
+  if (s.callout) h += `<div class="callout">${s.callout}</div>`;
+  if (s.highlight) h += `<div class="highlight">${s.highlight}</div>`;
+  if (s.content2) h += `<div>${s.content2}</div>`;
+  if (s.highlight2) h += `<div class="highlight">${s.highlight2}</div>`;
+  if (s.content3) h += `<div>${s.content3}</div>`;
+  if (s.code) h += codeBlock(s.code);
+  if (s.code2) h += codeBlock(s.code2);
+  if (s.content3 && !s.code) {}
+  h += `</div>`;
+  return h;
+}
+
+function renderWarningSection(s) {
+  let h = `<div class="card"><div class="card-heading">${s.heading}</div>`;
+  if (s.content) h += `<div>${s.content}</div>`;
+  if (s.code) h += codeBlock(s.code);
+  if (s.warning) h += `<div class="warning-box"><span class="warn-label">⚠ WARNING</span>${s.warning}</div>`;
+  if (s.content2) h += `<div>${s.content2}</div>`;
+  if (s.callout) h += `<div class="callout">${s.callout}</div>`;
+  h += `</div>`;
+  return h;
+}
+
+function renderTerms(s) {
+  let rows = s.terms.map(t =>
+    `<tr><td>${escHtml(t.term)}</td><td>${escHtml(t.definition)}</td></tr>`
+  ).join('');
+  return `<div class="card">
+    <div class="card-heading">${s.heading}</div>
+    <table class="terms-table">
+      <tr><th>TERM</th><th>WHAT IT MEANS</th></tr>
+      ${rows}
+    </table>
+  </div>`;
+}
+
+function renderBuild(s) {
+  const stepNum = s.heading.match(/Step (\d+)/)?.[1] || '';
+  const headingText = s.heading.replace(/Step \d+ — /, '');
+  let h = `<div class="build-card">
+    <div class="build-badge">⌨ CODING STEP ${stepNum ? '— STEP ' + stepNum : ''}</div>
+    <div class="build-heading">${headingText}</div>
+    <div class="build-instruction">${s.instruction}</div>`;
+
+  if (s.code) h += codeBlock(s.code, true);
+
+  if (s.expectedOutput) {
+    const outputText = s.expectedOutput.replace(/\\n/g, '\n');
+    h += `<div class="expected-output">
+      <div class="expected-output-label">▶ EXPECTED OUTPUT</div>
+      <pre class="expected-output-pre">${escHtml(outputText)}</pre>
+    </div>`;
+  }
+
+  if (s.explain && s.explain.length) {
+    h += `<table class="explain-table">`;
+    s.explain.forEach(e => {
+      h += `<tr><td>${escHtml(e.line)}</td><td>${escHtml(e.explain)}</td></tr>`;
+    });
+    h += `</table>`;
+  }
+
+  if (s.note) h += `<div class="note-box">📌 ${s.note}</div>`;
+
+  h += `</div>`;
+  return h;
+}
+
+// ── CODE BLOCK ──
+function codeBlock(code, copyable) {
+  const id = 'cb_' + Math.random().toString(36).slice(2);
+  return `<div class="code-wrap">
+    <pre><code class="language-python" id="${id}">${escHtml(code)}</code></pre>
+    ${copyable !== false ? `<button class="copy-btn" onclick="copyCode('${id}', this)">COPY</button>` : ''}
+  </div>`;
+}
+
+// ── SNAPSHOT ──
+function renderSnapshot(code, pageNum) {
+  const id = 'snap_' + pageNum;
+  return `<div class="snapshot-wrap">
+    <div class="snapshot-header">
+      <span class="snapshot-label">📄 YOUR FILE SO FAR — game_characters.py</span>
+      <button class="snapshot-copy-btn" id="snapbtn_${pageNum}" onclick="copySnapshot('${id}', 'snapbtn_${pageNum}')">Copy full file</button>
+    </div>
+    <pre><code class="language-python" id="${id}">${escHtml(code)}</code></pre>
+  </div>`;
+}
+
+// ── DOWNLOAD ──
+function renderDownload(dl) {
+  return `<div class="download-section">
+    <div class="download-eyebrow">🐍 OPEN IN PYCHARM</div>
+    <div class="download-title">Your Complete File ⚔️</div>
+    <div class="download-desc">Download the complete working Python file with extension challenges at the bottom. Open it in PyCharm, run it, then try the challenges.</div>
+    <button class="btn-download" onclick="downloadFile()">⬇ DOWNLOAD PYTHON FILE</button>
+  </div>`;
+}
+
+// ── QUIZ ──
+function renderQuiz(quiz) {
+  let h = `<div class="quiz-intro">
+    <div class="quiz-intro-title">⚔️ Final Quiz ⚔️</div>
+    <div class="quiz-intro-sub">7 QUESTIONS — SCREENSHOT YOUR SCORE FOR YOUR TEACHER</div>
+  </div>`;
+
+  quiz.questions.forEach((q, i) => {
+    h += renderQuestion(q, i + 1);
+  });
+
+  h += `<button class="btn-submit" id="submitBtn" onclick="submitQuiz()">⚔️ SUBMIT QUIZ</button>`;
+
+  h += `<div class="score-panel" id="scorePanel">
+    <div class="score-title">Quest Complete!</div>
+    <div class="score-number" id="scoreNum"></div>
+    <div class="score-msg" id="scoreMsg"></div>
+    <div class="screenshot-note">📸 SCREENSHOT THIS PANEL AND UPLOAD TO YOUR SCHOOL LMS</div>
+  </div>`;
+
+  h += renderBrokenCode(quiz.brokenCode);
+
+  return h;
+}
+
+function renderQuestion(q, num) {
+  // Format question text — split on ---code--- delimiter for code blocks
+  function formatQuestion(text) {
+    const parts = text.split('---code---');
+    return parts.map((part, i) => {
+      if (i % 2 === 1) {
+        return `<pre class="q-code-block">${escHtml(part.trim())}</pre>`;
+      }
+      return `<p style="margin-bottom:8px;">${part.trim().replace(/\n/g, '<br>')}</p>`;
+    }).join('');
+  }
+
+  let h = `<div class="quiz-question" id="qq_${q.id}">
+    <div class="q-num">QUESTION ${num} OF 7</div>
+    <div class="q-diff">${q.difficulty}</div>
+    <div class="q-text">${formatQuestion(q.question)}</div>`;
+
+  if (q.type === 'mcq') {
+    h += `<div class="quiz-options" id="opts_${q.id}">`;
+    const letters = ['A','B','C','D'];
+    q.options.forEach((opt, i) => {
+      const isCode = opt.includes('\n');
+      h += `<button class="quiz-option" onclick="checkMcq('${q.id}', ${i})">
+        <span class="option-letter">${letters[i]}</span>
+        ${isCode ? `<span class="option-code">${escHtml(opt)}</span>` : `<span>${escHtml(opt)}</span>`}
+      </button>`;
+    });
+    h += `</div>`;
+  }
+
+  if (q.type === 'fill') {
+    h += `<div class="fill-row">
+      <input class="fill-input" id="fill_${q.id}" placeholder="${q.placeholder}" onkeydown="if(event.key==='Enter')checkFill('${q.id}')">
+      <button class="fill-btn" id="fillbtn_${q.id}" onclick="checkFill('${q.id}')">CHECK</button>
+    </div>`;
+  }
+
+  h += `<div class="quiz-feedback" id="fb_${q.id}"></div></div>`;
+  return h;
+}
+
+function renderBrokenCode(bc) {
+  return `<div class="broken-card">
+    <div class="broken-badge">🔴 BROKEN CODE CHALLENGE</div>
+    <div class="broken-heading">${bc.heading}</div>
+    <div class="broken-instruction">${bc.instruction}</div>
+    ${codeBlock(bc.code, true)}
+    <button class="hint-toggle" onclick="toggleHint()">💡 SHOW HINT</button>
+    <div class="hint-box" id="hintBox">${escHtml(bc.hint)}</div>
+    <div class="lms-note">📋 Fix this code in PyCharm until it runs correctly, then copy your corrected code and submit it to your school LMS as evidence of completion.</div>
+  </div>`;
+}
+
+// ── QUIZ LOGIC ──
+function checkMcq(qId, selectedIndex) {
+  const q = TUTORIAL.pages[currentPage].quiz.questions.find(q => q.id === qId);
+  if (!q || quizCorrect[qId]) return;
+  const opts = document.querySelectorAll(`#opts_${qId} .quiz-option`);
+  const fb = document.getElementById(`fb_${qId}`);
+  const isCorrect = selectedIndex === q.answer;
+
+  opts.forEach(o => o.classList.add('locked'));
+
+  if (isCorrect) {
+    opts[selectedIndex].classList.add('correct');
+    quizCorrect[qId] = true;
+    if (!quizScores[qId]) { quizScores[qId] = true; }
+    fb.className = 'quiz-feedback show correct';
+    fb.textContent = '✓ Correct! ' + q.explanation;
+  } else {
+    opts[selectedIndex].classList.add('wrong');
+    opts[q.answer].classList.add('correct');
+    fb.className = 'quiz-feedback show wrong';
+    fb.innerHTML = '✗ Not quite. ' + q.explanation +
+      ` <button onclick="retryMcq('${qId}')" style="margin-left:8px;padding:3px 10px;font-size:0.75rem;border:1px solid #991b1b;border-radius:4px;background:transparent;color:#ff8899;cursor:pointer;">Try again</button>`;
+  }
+}
+
+function retryMcq(qId) {
+  const opts = document.querySelectorAll(`#opts_${qId} .quiz-option`);
+  opts.forEach(o => o.classList.remove('correct','wrong','locked'));
+  const fb = document.getElementById(`fb_${qId}`);
+  fb.className = 'quiz-feedback';
+  fb.innerHTML = '';
+}
+
+function checkFill(qId) {
+  const q = TUTORIAL.pages[currentPage].quiz.questions.find(q => q.id === qId);
+  if (!q || quizCorrect[qId]) return;
+  const input = document.getElementById(`fill_${qId}`);
+  const btn = document.getElementById(`fillbtn_${qId}`);
+  const fb = document.getElementById(`fb_${qId}`);
+  const val = input.value.trim().toLowerCase();
+  const isCorrect = q.answers.some(a => a.toLowerCase() === val);
+
+  if (isCorrect) {
+    input.disabled = true;
+    btn.disabled = true;
+    input.classList.add('correct');
+    quizCorrect[qId] = true;
+    if (!quizScores[qId]) { quizScores[qId] = true; }
+    fb.className = 'quiz-feedback show correct';
+    fb.textContent = '✓ Correct! ' + q.explanation;
+  } else {
+    input.classList.add('wrong');
+    fb.className = 'quiz-feedback show wrong';
+    fb.innerHTML = '✗ Not quite. ' + q.explanation +
+      ` <button onclick="retryFill('${qId}')" style="margin-left:8px;padding:3px 10px;font-size:0.75rem;border:1px solid #991b1b;border-radius:4px;background:transparent;color:#ff8899;cursor:pointer;">Try again</button>`;
+  }
+}
+
+function retryFill(qId) {
+  const input = document.getElementById(`fill_${qId}`);
+  input.classList.remove('wrong','correct');
+  input.value = '';
+  input.disabled = false;
+  document.getElementById(`fillbtn_${qId}`).disabled = false;
+  const fb = document.getElementById(`fb_${qId}`);
+  fb.className = 'quiz-feedback';
+  fb.innerHTML = '';
+  input.focus();
+}
+
+function submitQuiz() {
+  const quiz = TUTORIAL.pages[currentPage].quiz;
+  let score = 0;
+  quiz.questions.forEach(q => { if (quizCorrect[q.id]) score++; });
+  document.getElementById('submitBtn').style.display = 'none';
+  const panel = document.getElementById('scorePanel');
+  panel.style.display = 'block';
+  document.getElementById('scoreNum').textContent = score + ' / 7';
+  const msgs = [
+    "Keep going — revisit the tutorial and give it another try! 💪",
+    "A start! Read back through the pages and try again. 📖",
+    "Getting there! A couple of concepts to revisit. 🎯",
+    "Good effort! Nearly halfway there — keep pushing! 🎯",
+    "Good work! A few more to review before you've got it all. 🌟",
+    "Great understanding! Almost there. 🌟",
+    "Excellent work! You clearly understand OOP inheritance. 🏆",
+    "PERFECT SCORE! You are an OOP inheritance master! ⚔️🏆⚔️"
+  ];
+  document.getElementById('scoreMsg').textContent = msgs[score];
+  panel.scrollIntoView({ behavior: 'smooth' });
+}
+
+function toggleHint() {
+  const box = document.getElementById('hintBox');
+  box.classList.toggle('visible');
+}
+
+// ── COPY ──
+function copyCode(id, btn) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    btn.textContent = 'COPIED!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function copySnapshot(id, btnId) {
+  const el = document.getElementById(id);
+  const btn = document.getElementById(btnId);
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy full file'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── DOWNLOAD ──
+function downloadFile() {
+  const dl = TUTORIAL.pages.find(p => p.download);
+  if (!dl) return;
+  const snap = TUTORIAL.pages.find(p => p.download).snapshot;
+  const challenges = dl.download.challenges.map((c, i) => `\n# CHALLENGE ${i + 1}\n# ${c}`).join('\n');
+  const code = snap + '\n\n\n# ============================================================\n# EXTENSION CHALLENGES — optional, not checked\n# ============================================================\n' + challenges + '\n';
+  const blob = new Blob([code], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = dl.download.filename;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+}
+
+// ── UTILS ──
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+// ── START ──
+init();
+</script>
+</body>
+</html>
