@@ -1053,8 +1053,15 @@ function init() {
   document.title = TUTORIAL.title;
   renderNav();
   renderSidebar();
-  goToPage(0);
+  let start = 0;
+  const m = (location.hash || '').match(/page=(\d+)/);
+  if (m) { const n = parseInt(m[1], 10) - 1; if (n >= 0 && n < TUTORIAL.pages.length) start = n; }
+  goToPage(start);
 }
+window.addEventListener('hashchange', () => {
+  const m = (location.hash || '').match(/page=(\d+)/);
+  if (m) { const n = parseInt(m[1], 10) - 1; if (n >= 0 && n < TUTORIAL.pages.length) goToPage(n); }
+});
 
 // ── NAV DOTS ──
 function renderNav() {

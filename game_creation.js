@@ -47,7 +47,7 @@ const TUTORIAL = {
 3. Rogues that are still alive attack the castle.<br>
 4. When the wave is cleared, the next wave begins.<br>
 5. Castle survives all waves → <strong>VICTORY</strong>. Castle falls → <strong>DEFEAT</strong>.`,
-          content2: `<p>Notice that step 2 and step 3 both just say "attack". The Warrior, the Archer and the Rogue King all attack in completely different ways — but the battle loop calls the same <code>attack()</code> method on each. That is <strong>polymorphism</strong>, and it is what makes the whole game possible with so little code.</p>`
+          content2: `<p>Notice that step 2 and step 3 both just say "attack". The Warrior, the Archer and the Rogue King all attack in completely different ways — but the battle loop calls the same <code>attack()</code> method on each. That is <strong><a href="polymorphism_index.html#page=1">polymorphism</a></strong>, and it is what makes the whole game possible with so little code.</p>`
         },
         {
           heading: "Your Plan",
@@ -180,7 +180,7 @@ class RogueKing(Enemy):    # the boss
             print(f"  {front.name} is defeated!")
             wave.pop(0)`,
           explain: [
-            { line: "defender.attack(front)", explain: "Here is the polymorphism: the same line calls the Warrior's, Archer's and Thief's <em>different</em> attacks. Python picks the right one for each defender automatically." },
+            { line: "defender.attack(front)", explain: "Here is the polymorphism: the same line calls the Warrior's, Archer's and Thief's <em>different</em> attacks. Python picks the right one for each defender automatically — exactly like the band loop in the <a href=\"polymorphism_index.html#page=4\">Polymorphism tutorial (page 4)</a>." },
             { line: "wave.pop(0)", explain: "Removes the front rogue once it is defeated so the next rogue moves up." }
           ]
         },
