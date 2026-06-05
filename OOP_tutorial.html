@@ -91,6 +91,24 @@
     letter-spacing: 0.05em;
   }
 
+  .back-to-menu {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--teal-mid);
+    background: transparent;
+    border: 1px solid var(--teal-mid);
+    border-radius: var(--radius);
+    padding: 6px 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+  .back-to-menu:hover { background: var(--teal-light); color: var(--teal-dark); }
+
   .glossary-btn {
     font-family: var(--font-sans);
     font-size: 0.85rem;
@@ -1316,6 +1334,7 @@
 <body>
 
 <header class="site-header">
+  <a class="back-to-menu" href="index.html">← Menu</a>
   <div class="site-logo">
     <span class="py-badge">py</span>
     <span>OOP Tutorial Series</span>
@@ -1628,6 +1647,8 @@ function renderTutorial() {
     ? (t.id < 6 ? `Tutorial ${t.id + 1} →` : '✓ Complete')
     : 'Next →';
 
+  const isVeryLastStep = isVeryLast;
+
   // Build quiz section if this step has a quiz
   window._quizData = {};
   let quizSection = '';
@@ -1667,7 +1688,8 @@ function renderTutorial() {
       <button class="nav-btn btn-prev ${cls}" onclick="prevStep()" ${prevDisabled}>${prevLabel}</button>
       <span class="step-counter">${currentStep + 1} / ${totalSteps}</span>
       <button class="nav-btn btn-next ${cls} ${isLast ? 'last-step' : ''}" onclick="nextStep()">${nextLabel}</button>
-    </div>`;
+    </div>
+    ${isVeryLastStep ? `<div style="text-align:center;margin-top:1.5rem;"><a class="back-to-menu" href="index.html">← Back to Menu</a></div>` : ''}`;
 
   // Syntax highlight
   document.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
@@ -1994,3 +2016,5 @@ init();
 </script>
 </body>
 </html>
+
+<!-- touched 2026-06-05 -->

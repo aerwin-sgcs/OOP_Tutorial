@@ -86,6 +86,28 @@
     letter-spacing: 1px;
   }
 
+  .back-to-menu {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: 1px solid var(--gold-dim);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--gold);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+  .back-to-menu:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    box-shadow: var(--glow-gold);
+  }
+
   .page-nav {
     display: flex;
     align-items: center;
@@ -1006,6 +1028,7 @@
 <body>
 
 <header class="site-header">
+  <a class="back-to-menu" href="index.html">← MENU</a>
   <div class="site-logo" id="siteLogo">⚔️ OOP Quest</div>
   <nav class="page-nav" id="pageNav"></nav>
 </header>
@@ -1121,7 +1144,7 @@ function renderPage(page) {
   if (currentPage < TUTORIAL.pages.length - 1) {
     html += `<button class="btn-nav btn-next" onclick="goToPage(${currentPage + 1})">NEXT PAGE →</button>`;
   } else {
-    html += `<span></span>`;
+    html += `<a class="btn-nav btn-next" href="index.html">← BACK TO MENU</a>`;
   }
   html += `</div>`;
 
@@ -1466,3 +1489,5 @@ init();
 </script>
 </body>
 </html>
+
+<!-- touched 2026-06-05 -->

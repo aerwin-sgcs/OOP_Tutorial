@@ -1,10 +1,412 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="refresh" content="0; url=LearnOOP.html">
-    <link rel="canonical" href="LearnOOP.html">
-  </head>
-  <body>
-    <p>Redirecting to <a href="LearnOOP.html">the tutorial</a>…</p>
-  </body>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning OOP</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep:    #060818;
+    --bg-card:    #0d1227;
+    --bg-panel:   #111836;
+    --gold:       #f0c040;
+    --gold-dim:   #a07c20;
+    --gold-faint: #f0c04018;
+    --cyan:       #00e5ff;
+    --cyan-dim:   #007a8a;
+    --purple:     #9b59f5;
+    --purple-dim: #4a2a80;
+    --green:      #39ff14;
+    --red:        #ff4466;
+    --text:       #c8d8f0;
+    --text-dim:   #6a7a9a;
+    --border:     #1e2e55;
+    --glow-gold:  0 0 24px #f0c04055;
+    --glow-cyan:  0 0 24px #00e5ff44;
+    --glow-purple:0 0 24px #9b59f544;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* starfield */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 8%  12%, #ffffff28 0%, transparent 100%),
+      radial-gradient(1px 1px at 22% 38%, #ffffff18 0%, transparent 100%),
+      radial-gradient(1px 1px at 47%  8%, #ffffff22 0%, transparent 100%),
+      radial-gradient(1px 1px at 63% 28%, #ffffff18 0%, transparent 100%),
+      radial-gradient(1px 1px at 81% 55%, #ffffff22 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 75%, #ffffff18 0%, transparent 100%),
+      radial-gradient(1px 1px at 57% 68%, #ffffff20 0%, transparent 100%),
+      radial-gradient(1px 1px at 88% 82%, #ffffff15 0%, transparent 100%),
+      radial-gradient(1px 1px at 14% 88%, #ffffff22 0%, transparent 100%),
+      radial-gradient(1px 1px at 72% 15%, #ffffff18 0%, transparent 100%),
+      radial-gradient(1px 1px at 93% 40%, #ffffff20 0%, transparent 100%),
+      radial-gradient(1px 1px at 5%  55%, #ffffff15 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* nebula glow */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 40%, #1a0a3a28 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 20%, #0a1a3a28 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 90%, #0a2a1a18 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── LAYOUT ── */
+  .page {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4rem 2rem 5rem;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    margin-bottom: 3.5rem;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    opacity: 0.85;
+  }
+
+  .hero-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    color: var(--gold);
+    text-shadow: var(--glow-gold);
+    line-height: 1.15;
+    margin-bottom: 1.2rem;
+    letter-spacing: 1px;
+  }
+
+  .hero-sub {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--text-dim);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 220px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    margin: 0 auto 3rem;
+    animation: fadeIn 1s ease 0.3s both;
+  }
+
+  /* ── GRID ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem 1.75rem 1.75rem;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    animation: fadeUp 0.7s ease both;
+  }
+
+  .card:nth-child(1) { animation-delay: 0.15s; }
+  .card:nth-child(2) { animation-delay: 0.28s; }
+  .card:nth-child(3) { animation-delay: 0.41s; }
+  .card:nth-child(4) { animation-delay: 0.54s; }
+
+  /* top accent bar */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 12px 12px 0 0;
+    transition: opacity 0.25s;
+    opacity: 0.7;
+  }
+
+  /* hover glow behind card */
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .card:hover { transform: translateY(-5px); }
+  .card:hover::after { opacity: 1; }
+  .card:hover::before { opacity: 1; }
+
+  /* ── CARD COLOUR THEMES ── */
+
+  /* OOP — teal/blue (light editorial feel against dark) */
+  .card-oop { border-color: #1e3a4a; }
+  .card-oop::before { background: linear-gradient(90deg, #1d9e75, #378add); }
+  .card-oop:hover   { border-color: #1d9e75; box-shadow: 0 8px 40px #1d9e7530; }
+  .card-oop::after  { background: radial-gradient(ellipse at 50% 0%, #1d9e7512, transparent 70%); }
+  .card-oop .card-icon  { color: #1d9e75; }
+  .card-oop .card-label { color: #1d9e75; }
+  .card-oop .card-title { color: #e1f5ee; }
+  .card-oop .card-arrow { color: #1d9e75; }
+
+  /* Inheritance — gold/amber */
+  .card-inheritance { border-color: #2e2010; }
+  .card-inheritance::before { background: linear-gradient(90deg, var(--gold), #ef9f27); }
+  .card-inheritance:hover   { border-color: var(--gold-dim); box-shadow: var(--glow-gold), 0 8px 40px #f0c04020; }
+  .card-inheritance::after  { background: radial-gradient(ellipse at 50% 0%, #f0c04012, transparent 70%); }
+  .card-inheritance .card-icon  { color: var(--gold); }
+  .card-inheritance .card-label { color: var(--gold-dim); }
+  .card-inheritance .card-title { color: var(--gold); }
+  .card-inheritance .card-arrow { color: var(--gold); }
+
+  /* Encapsulation — cyan */
+  .card-encapsulation { border-color: #0a2535; }
+  .card-encapsulation::before { background: linear-gradient(90deg, var(--cyan), #378add); }
+  .card-encapsulation:hover   { border-color: var(--cyan-dim); box-shadow: var(--glow-cyan), 0 8px 40px #00e5ff18; }
+  .card-encapsulation::after  { background: radial-gradient(ellipse at 50% 0%, #00e5ff10, transparent 70%); }
+  .card-encapsulation .card-icon  { color: var(--cyan); }
+  .card-encapsulation .card-label { color: var(--cyan-dim); }
+  .card-encapsulation .card-title { color: var(--cyan); }
+  .card-encapsulation .card-arrow { color: var(--cyan); }
+
+  /* Polymorphism — purple */
+  .card-polymorphism { border-color: #1e1040; }
+  .card-polymorphism::before { background: linear-gradient(90deg, var(--purple), #d4537e); }
+  .card-polymorphism:hover   { border-color: var(--purple-dim); box-shadow: var(--glow-purple), 0 8px 40px #9b59f520; }
+  .card-polymorphism::after  { background: radial-gradient(ellipse at 50% 0%, #9b59f510, transparent 70%); }
+  .card-polymorphism .card-icon  { color: var(--purple); }
+  .card-polymorphism .card-label { color: var(--purple-dim); }
+  .card-polymorphism .card-title { color: var(--purple); }
+  .card-polymorphism .card-arrow { color: var(--purple); }
+
+  /* ── CARD INTERNALS ── */
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+
+  .card-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+  }
+
+  .card-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.05rem;
+    line-height: 1.3;
+    margin-bottom: 0.85rem;
+    letter-spacing: 0.5px;
+  }
+
+  .card-desc {
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: var(--text-dim);
+    line-height: 1.65;
+    flex: 1;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-theme {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    opacity: 0.6;
+    margin-bottom: 1.25rem;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    margin-top: auto;
+  }
+
+  .card-cta {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .card-arrow {
+    font-size: 1.1rem;
+    transition: transform 0.2s ease;
+  }
+
+  .card:hover .card-arrow { transform: translateX(5px); }
+
+  /* ── FOOTER NOTE ── */
+  .page-footer {
+    margin-top: 3.5rem;
+    text-align: center;
+    animation: fadeIn 1s ease 0.8s both;
+  }
+
+  .page-footer p {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    opacity: 0.5;
+    text-transform: uppercase;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .hero-title { font-size: 1.6rem; }
+    .card-grid  { grid-template-columns: 1fr; }
+    .page       { padding: 3rem 1.25rem 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="hero">
+    <p class="hero-eyebrow">Python · Object-Oriented Programming</p>
+    <h1 class="hero-title">Learning OOP</h1>
+    <p class="hero-sub">Choose a tutorial below. Complete it at your own pace, then return here to pick your next topic.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="card-grid">
+
+    <!-- OOP Series -->
+    <a class="card card-oop" href="OOP_tutorial.html">
+      <span class="card-icon">🎓</span>
+      <span class="card-label">Start here</span>
+      <h2 class="card-title">OOP Tutorial Series</h2>
+      <p class="card-desc">Six step-by-step tutorials that introduce Object-Oriented Programming as you build a complete Student Study Aid application.</p>
+      <p class="card-theme">// study_aid.py · Tutorials 1–6</p>
+      <div class="card-footer">
+        <span class="card-cta">Begin series</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- Inheritance -->
+    <a class="card card-inheritance" href="inheritance_index.html">
+      <span class="card-icon">⚔️</span>
+      <span class="card-label">Topic</span>
+      <h2 class="card-title">Inheritance</h2>
+      <p class="card-desc">Build a game character system using parent and child classes. Learn how subclasses inherit and extend behaviour from a base class.</p>
+      <p class="card-theme">// Warrior · Archer · Thief</p>
+      <div class="card-footer">
+        <span class="card-cta">Start tutorial</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- Encapsulation -->
+    <a class="card card-encapsulation" href="encapsulation_index.html">
+      <span class="card-icon">🏀</span>
+      <span class="card-label">Topic</span>
+      <h2 class="card-title">Encapsulation</h2>
+      <p class="card-desc">Build a basketball player management system. Explore public, protected, and private attributes and why hiding data matters.</p>
+      <p class="card-theme">// BasketballPlayer class</p>
+      <div class="card-footer">
+        <span class="card-cta">Start tutorial</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- Polymorphism -->
+    <a class="card card-polymorphism" href="polymorphism_index.html">
+      <span class="card-icon">🎵</span>
+      <span class="card-label">Topic</span>
+      <h2 class="card-title">Polymorphism</h2>
+      <p class="card-desc">Build a band of instruments using parent and child classes. See how the same method call produces different behaviour across objects.</p>
+      <p class="card-theme">// Guitar · DrumKit · Piano</p>
+      <div class="card-footer">
+        <span class="card-cta">Start tutorial</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+
+  <footer class="page-footer">
+    <p>Select a tutorial · complete it · return here</p>
+  </footer>
+
+</div>
+
+</body>
 </html>
+
+<!-- touched 2026-06-05 -->
