@@ -78,6 +78,20 @@ const TUTORIAL = {
             { term: "Override", definition: "When a child class replaces a parent's method with its own version" },
             { term: "super()", definition: "A way to call the parent class constructor from inside a child class" }
           ]
+        },
+        {
+          type: "checkpoint",
+          format: "mcq",
+          heading: "Check 1 — What is inheritance?",
+          question: "Which sentence best describes what <strong>inheritance</strong> means in Object-Oriented Programming?",
+          options: [
+            "Two unrelated classes are joined together so they can share variables.",
+            "A class automatically receives the attributes and methods of another class, called its parent.",
+            "A class is renamed so it matches the name of an existing class.",
+            "A method inside a class is replaced with a brand new function written outside the class."
+          ],
+          answer: 1,
+          explanation: "Inheritance lets a child class automatically receive the attributes and methods of a parent class — so shared code is written once in the parent and reused by every child. The other options describe things that are not inheritance."
         }
       ],
       snapshot: null
@@ -175,6 +189,15 @@ warrior.block()         # Thor raises their shield! Armor: 50`,
             { line: "warrior.introduce()", explain: "Warrior does not have its own introduce() method — it inherits it from GameCharacter. This is inheritance in action." },
             { line: "warrior.block()", explain: "This only works on warrior — not on hero, because GameCharacter does not have a block() method." }
           ]
+        },
+        {
+          type: "checkpoint",
+          format: "truefalse",
+          heading: "Check 2 — Instances",
+          question: `True or False?\n---code---\nwarrior = Warrior("Thor", 100, 50)\n---code---\nAfter this line runs, <code>warrior</code> is an <strong>instance</strong> of the Warrior class — one specific object built from the Warrior blueprint, with its own name, health, and armor values.`,
+          options: ["True", "False"],
+          answer: 0,
+          explanation: "True. A class is the blueprint and an instance is one specific object created from that blueprint. Each instance keeps its own copy of the instance variables (name, health, armor), so two different warriors can have different values."
         }
       ],
       snapshot: `# game_characters.py — page 2 complete
@@ -294,6 +317,20 @@ archer.reload()    # Legolas reloaded! Arrows: 15`,
             { line: "archer.introduce()", explain: "Archer does not have introduce() written inside it. Python finds it on GameCharacter automatically. This is why inheritance is so powerful — the method is written once and works everywhere." },
             { line: "archer.reload()", explain: "Only Archer has reload(). If you tried warrior.reload() Python would raise an error — Warrior does not have that method." }
           ]
+        },
+        {
+          type: "checkpoint",
+          format: "multi",
+          heading: "Check 3 — Parent and child class",
+          question: `Look at this line:\n---code---\nclass Archer(GameCharacter):\n---code---\nTick BOTH correct statements — one about the parent and one about the child. You must select both correct answers (and nothing else) to be right.`,
+          options: [
+            "Parent class: Archer",
+            "Parent class: GameCharacter",
+            "Child class: Archer",
+            "Child class: GameCharacter"
+          ],
+          answers: [1, 2],
+          explanation: "The class in the brackets is the parent — GameCharacter. The class being defined is the child — Archer. So the parent class is GameCharacter and the child class is Archer."
         }
       ],
       snapshot: `# game_characters.py — page 3 complete
@@ -417,6 +454,20 @@ self.health = health`,
         self.armor = armor    # MISSING super() — do NOT leave it like this`,
           warning: `Without super(), the name and health instance variables are never set up. When you call warrior.introduce() Python will crash with an AttributeError: 'Warrior' object has no attribute 'name'. The parent's __init__ never ran, so the parent's setup never happened.`,
           content2: `<p>Change it back to using <code>super().__init__(name, health)</code> before continuing. This experiment shows you exactly why super() is not optional — it is the line that connects the child class to its parent's setup code.</p>`
+        },
+        {
+          type: "checkpoint",
+          format: "mcq",
+          heading: "Check 4 — What does super() do?",
+          question: `Look at this Thief class:\n---code---\nclass Thief(GameCharacter):\n    def __init__(self, name, health, stealth):\n        super().__init__(name, health)\n        self.stealth = stealth\n---code---\nWhat does the line <code>super().__init__(name, health)</code> actually do?`,
+          options: [
+            "It creates a brand new GameCharacter object that lives alongside the Thief.",
+            "It calls the GameCharacter constructor so it runs self.name = name and self.health = health for this Thief.",
+            "It renames the Thief class to GameCharacter for the rest of the program.",
+            "It skips the GameCharacter constructor and stops it from running."
+          ],
+          answer: 1,
+          explanation: "super().__init__(name, health) calls the parent class constructor. GameCharacter's __init__ then runs and sets self.name and self.health for THIS Thief object. The Thief doesn't need to rewrite those two lines — that's the DRY principle in action."
         }
       ],
       snapshot: `# game_characters.py — page 4 complete
@@ -584,6 +635,20 @@ thief.disarm_trap()`,
           explain: [
             { line: "warrior.attack() / archer.attack() / thief.attack()", explain: "Same method name, three completely different results. Python looks at the actual class of each object and calls that class's version. This is overriding in action." }
           ]
+        },
+        {
+          type: "checkpoint",
+          format: "multi",
+          heading: "Check 5 — Overriding",
+          question: "Which of the following are <strong>true</strong> about overriding a method? Tick ALL that apply — you must select the three correct statements (and avoid the one that is wrong) to be right.",
+          options: [
+            "Overriding is when a child class writes its own version of a method that already exists in the parent class.",
+            "When you call the method on a child class object, Python uses the child class version instead of the parent's.",
+            "Overriding deletes the method from the parent class so no other child class can use it anymore.",
+            "Overriding lets different child classes give different behaviour for the same method name (e.g. Warrior.attack vs Archer.attack)."
+          ],
+          answers: [0, 1, 3],
+          explanation: "Overriding lets a child class replace a parent method with its own version (A), Python uses the child's version when called on a child object (B), and different children can give the same method name different behaviour (D). It does NOT delete the parent's method (C) — the parent and any other children that didn't override it still use the original."
         }
       ],
       snapshot: `# game_characters.py — COMPLETE FILE

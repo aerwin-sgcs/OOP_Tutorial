@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ironwall — Learning OOP</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #303c4e;          /* slate blue */
+    --bg2: #242e3e;
+    --card: #3a485c;
+    --ink: #eaf0f8;
+    --ink-dim: #a0b2c8;
+    --crimson: #d0a05c;     /* bronze accent */
+    --crimson-dark: #aa783c;
+    --border: #4a5a70;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Exo 2', sans-serif;
+    background: linear-gradient(160deg, var(--bg) 0%, var(--bg2) 100%);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px;
+  }
+  .back-to-menu {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem; letter-spacing: 1px;
+    text-decoration: none; color: var(--crimson);
+    border: 2px solid var(--crimson); border-radius: 6px;
+    padding: 8px 14px; transition: all 0.15s;
+  }
+  .back-to-menu:hover { background: var(--crimson); color: #fff; }
+  .eyebrow {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.75rem; letter-spacing: 3px; color: var(--crimson);
+    text-transform: uppercase;
+  }
+  .hero {
+    text-align: center; padding: 30px 20px 10px; max-width: 880px; margin: 0 auto;
+  }
+  .hero h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 3.4rem; color: var(--ink); margin: 6px 0 14px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  }
+  .hero p.lead {
+    font-size: 1.15rem; color: var(--ink-dim); max-width: 680px; margin: 0 auto 26px;
+    line-height: 1.6;
+  }
+  .btn-download {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.05rem;
+    letter-spacing: 1px; text-decoration: none; color: #2a2012;
+    background: var(--crimson); padding: 16px 32px; border-radius: 10px;
+    box-shadow: 0 6px 0 var(--crimson-dark); transition: all 0.1s;
+  }
+  .btn-download:hover { transform: translateY(2px); box-shadow: 0 4px 0 var(--crimson-dark); }
+  .btn-download:active { transform: translateY(6px); box-shadow: 0 0 0 var(--crimson-dark); }
+  .subnote { margin-top: 12px; font-size: 0.9rem; color: var(--ink-dim); }
+  .subnote a { color: var(--crimson); }
+
+  .shots {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px; max-width: 1040px; margin: 40px auto 10px; padding: 0 24px;
+  }
+  .shot {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; box-shadow: 0 6px 18px rgba(40,60,90,0.12);
+  }
+  .shot img { width: 100%; display: block; }
+  .shot .cap {
+    font-family: 'Orbitron', sans-serif; font-size: 0.72rem; letter-spacing: 1px;
+    color: var(--ink-dim); padding: 10px 14px; text-transform: uppercase;
+  }
+
+  .panel {
+    max-width: 1040px; margin: 36px auto 0; padding: 0 24px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 22px;
+  }
+  @media (max-width: 760px) { .panel { grid-template-columns: 1fr; } .hero h1 { font-size: 2.4rem; } }
+  .box {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 22px 26px; box-shadow: 0 4px 14px rgba(40,60,90,0.08);
+  }
+  .box h2 {
+    font-family: 'Orbitron', sans-serif; font-size: 1rem; letter-spacing: 1px;
+    color: var(--crimson); margin-bottom: 14px; text-transform: uppercase;
+  }
+  .box ul { list-style: none; }
+  .box li { padding: 7px 0 7px 26px; position: relative; color: var(--ink); line-height: 1.5; }
+  .box li::before {
+    content: "▸"; position: absolute; left: 4px; color: var(--crimson); font-weight: 700;
+  }
+  .box code {
+    font-family: 'Share Tech Mono', monospace; background: #26303f;
+    padding: 2px 6px; border-radius: 4px; color: #e6b87a; font-size: 0.9em;
+  }
+  .req-line { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); }
+  .req-line:last-child { border-bottom: none; }
+  .req-line span:first-child { color: var(--ink-dim); }
+  .req-line span:last-child { font-family: 'Share Tech Mono', monospace; }
+  footer { text-align: center; margin-top: 44px; color: var(--ink-dim); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="eyebrow">Learning OOP · The Game</span>
+  <a class="back-to-menu" href="index.html">&lt; ← MENU &gt;</a>
+</div>
+
+<div class="hero">
+  <div class="eyebrow">Built with Python + pygame</div>
+  <h1>Ironwall</h1>
+  <p class="lead">
+    An OOP auto-battler. Three defenders — Warrior, Archer and Thief — hold the line
+    against three waves of rogues marching on the castle. The same inheritance and
+    polymorphism you've been learning, brought to life with images and animation.
+  </p>
+  <a class="btn-download" href="ironwall.zip" download>⬇ DOWNLOAD IRONWALL (.zip)</a>
+  <div class="subnote">
+    Runs on your own Mac — not in the browser.
+    Need pygame? See <a href="pygame_setup.html">Setup help: Installing pygame</a>.
+  </div>
+</div>
+
+<div class="shots">
+  <div class="shot">
+    <img src="ironwall_media/screen1.png" alt="Wave 1 — rogues advancing on the castle">
+    <div class="cap">Wave 1 — the rogues advance</div>
+  </div>
+  <div class="shot">
+    <img src="ironwall_media/screen2.png" alt="Wave 3 — the Rogue King attacks">
+    <div class="cap">Wave 3 — the Rogue King strikes</div>
+  </div>
+  <div class="shot">
+    <img src="ironwall_media/screen3.png" alt="Victory — the Ironwall holds">
+    <div class="cap">Victory — the Ironwall holds</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="box">
+    <h2>System Requirements</h2>
+    <div class="req-line"><span>Operating system</span><span>macOS</span></div>
+    <div class="req-line"><span>Python</span><span>3.10 or newer</span></div>
+    <div class="req-line"><span>Library</span><span>pygame</span></div>
+    <div class="req-line"><span>Disk space</span><span>~1 MB</span></div>
+    <div class="req-line"><span>How to run</span><span>python3 ironwall.py</span></div>
+  </div>
+  <div class="box">
+    <h2>The OOP inside</h2>
+    <ul>
+      <li><strong>Inheritance</strong> — every character descends from one shared <code>GameCharacter</code> class.</li>
+      <li><strong>Multi-level inheritance</strong> — <code>GameCharacter</code> → <code>Defender</code> / <code>Enemy</code> → the six characters.</li>
+      <li><strong>Polymorphism</strong> — everyone has <code>attack()</code>, but each does something different.</li>
+      <li>Want to build it yourself? Try the <strong>Game Creation</strong> tutorial.</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  Ironwall · Learning OOP Project · characters &amp; terrain from Kenney.nl (CC0)
+</footer>
+
+</body>
+</html>

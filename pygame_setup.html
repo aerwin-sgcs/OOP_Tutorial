@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pygame Setup — Learning OOP</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#303c4e; --bg2:#242e3e; --card:#3a485c; --ink:#eaf0f8;
+    --ink-dim:#a0b2c8; --gold:#d0a05c; --gold-dark:#aa783c; --border:#4a5a70; --code-bg:#26303f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Exo 2',sans-serif;background:linear-gradient(160deg,var(--bg),var(--bg2));color:var(--ink);min-height:100vh;padding-bottom:60px;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;}
+  .eyebrow{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;}
+  .back-to-menu{font-family:'Orbitron',sans-serif;font-size:.8rem;letter-spacing:1px;text-decoration:none;color:var(--gold);border:2px solid var(--gold);border-radius:6px;padding:8px 14px;}
+  .back-to-menu:hover{background:var(--gold);color:#2a2012;}
+  .wrap{max-width:760px;margin:0 auto;padding:10px 24px;}
+  h1{font-family:'Cinzel Decorative',serif;font-size:2.6rem;text-align:center;margin:14px 0 6px;}
+  .lead{text-align:center;color:var(--ink-dim);font-size:1.05rem;margin-bottom:28px;line-height:1.6;}
+  .step{background:var(--card);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:12px;padding:20px 24px;margin-bottom:18px;box-shadow:0 3px 12px rgba(0,0,0,.18);}
+  .step-num{font-family:'Orbitron',sans-serif;font-size:.66rem;letter-spacing:1.5px;background:var(--gold);color:#2a2012;padding:4px 10px;border-radius:20px;}
+  .step h2{font-family:'Orbitron',sans-serif;font-size:1.05rem;margin:10px 0 8px;}
+  .step p{line-height:1.65;margin-bottom:10px;}
+  code{font-family:'Share Tech Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;color:#e6b87a;font-size:.92em;}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:10px 0;overflow-x:auto;font-family:'Share Tech Mono',monospace;color:#d8e2ee;font-size:.9rem;line-height:1.5;}
+  .ok{background:#1b2330;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0;font-family:'Share Tech Mono',monospace;color:#9fe0b4;font-size:.85rem;}
+  .callout{background:rgba(208,160,92,.12);border-left:4px solid var(--gold);padding:12px 16px;border-radius:0 8px 8px 0;margin:10px 0;line-height:1.6;}
+  .trouble{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-top:8px;}
+  .trouble h2{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--gold);margin-bottom:10px;}
+  .trouble dt{font-weight:600;margin-top:12px;}
+  .trouble dd{color:var(--ink-dim);line-height:1.55;margin-left:0;}
+  .done{text-align:center;margin-top:26px;}
+  .btn{display:inline-block;font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:1px;background:var(--gold);color:#2a2012;text-decoration:none;padding:12px 24px;border-radius:8px;}
+  .btn:hover{background:var(--gold-dark);color:#fff;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="eyebrow">Learning OOP · Setup Help</span>
+  <a class="back-to-menu" href="index.html">&lt; ← MENU &gt;</a>
+</div>
+
+<div class="wrap">
+  <h1>Installing pygame</h1>
+  <p class="lead">
+    Pygame is the library that gives Ironwall its window, images and animation.
+    You only need to install it once. These steps are for <strong>macOS</strong>.
+  </p>
+
+  <div class="step">
+    <span class="step-num">STEP 1</span>
+    <h2>Open the Terminal</h2>
+    <p>Press <code>Cmd + Space</code>, type <strong>Terminal</strong>, and press Enter.
+    A black window opens where you can type commands. (You can also use the Terminal
+    built into PyCharm — the tab at the bottom of the window.)</p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">STEP 2</span>
+    <h2>Check you have Python 3</h2>
+    <p>Type this and press Enter:</p>
+    <pre>python3 --version</pre>
+    <p>You should see a version number of <strong>3.10 or higher</strong>, like:</p>
+    <div class="ok">Python 3.13.0</div>
+    <p>If you get an error instead, install Python from
+    <a href="https://www.python.org/downloads/" style="color:var(--gold)">python.org/downloads</a> first, then come back.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-num">STEP 3</span>
+    <h2>Install pygame</h2>
+    <p>Type this and press Enter:</p>
+    <pre>pip3 install pygame</pre>
+    <p>You will see some text scroll past as it downloads. When it finishes you should
+    see a line containing:</p>
+    <div class="ok">Successfully installed pygame-2.6.1</div>
+  </div>
+
+  <div class="step">
+    <span class="step-num">STEP 4</span>
+    <h2>Check it worked</h2>
+    <p>Type this and press Enter:</p>
+    <pre>python3 -m pygame.examples.aliens</pre>
+    <p>If a little game window pops open, pygame is installed correctly. Close the
+    window — you are ready to run Ironwall.</p>
+    <div class="callout">Now you can run your game with <code>python3 ironwall_visual.py</code>,
+    or play the finished game from the Ironwall page.</div>
+  </div>
+
+  <div class="trouble">
+    <h2>If something goes wrong</h2>
+    <dl>
+      <dt><code>pip3: command not found</code></dt>
+      <dd>Try <code>python3 -m pip install pygame</code> instead.</dd>
+      <dt>It says permission denied</dt>
+      <dd>Try <code>pip3 install --user pygame</code> — this installs it just for your account.</dd>
+      <dt>It installed, but Ironwall says "No module named pygame"</dt>
+      <dd>You may have more than one Python. Run the game the same way you installed:
+      if you used <code>python3</code>, run with <code>python3</code> too.</dd>
+      <dt>Still stuck?</dt>
+      <dd>Show your teacher the exact red error message — that is the fastest way to fix it.</dd>
+    </dl>
+  </div>
+
+  <div class="done">
+    <a class="btn" href="ironwall.html">⬇ GET IRONWALL →</a>
+  </div>
+</div>
+</body>
+</html>

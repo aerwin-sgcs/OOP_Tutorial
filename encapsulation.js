@@ -64,6 +64,20 @@ const TUTORIAL = {
             { term: "Data integrity", definition: "Keeping your data accurate and reliable. Encapsulation protects data integrity by preventing invalid values being assigned directly." },
             { term: "Interface", definition: "The set of public methods that the outside world uses to interact with an object. Getters and setters form the interface to private data." }
           ]
+        },
+        {
+          type: "checkpoint",
+          format: "mcq",
+          heading: "Check 1 — What is encapsulation?",
+          question: "Which sentence best describes <strong>encapsulation</strong> in Object-Oriented Programming?",
+          options: [
+            "Hiding the names of every variable in a program so nobody can read them.",
+            "Controlling access to an object's data so some parts are public and some are protected or private, with validated methods to change them.",
+            "Combining two unrelated classes into one so they share the same data.",
+            "Automatically copying every attribute of a parent class into a child class."
+          ],
+          answer: 1,
+          explanation: "Encapsulation controls who can read or change an object's data. Some attributes are public, some are protected, and some are private — and private data is changed only through validated methods (setters). This protects data integrity. The other options describe things that are not encapsulation."
         }
       ],
       snapshot: null
@@ -130,6 +144,15 @@ print(player1.team)    # Sydney Kings`,
             { line: "player1 = BasketballPlayer(\"Jamal\", \"Sydney Kings\")", explain: "Creates one instance of BasketballPlayer. Python calls __init__ automatically with name='Jamal' and team='Sydney Kings'." },
             { line: "print(player1.name)", explain: "Because name is a public attribute — no underscore — we can access it directly from outside the class. This is perfectly acceptable for public data." }
           ]
+        },
+        {
+          type: "checkpoint",
+          format: "truefalse",
+          heading: "Check 2 — Public attributes",
+          question: `True or False?\n---code---\nclass Item:\n    def __init__(self, name):\n        self.name = name\n\nthing = Item("box")\nprint(thing.name)\n---code---\nBecause <code>name</code> has NO underscores in front of it, it is a <strong>public</strong> attribute — so code outside the class is allowed to read it directly with <code>thing.name</code>.`,
+          options: ["True", "False"],
+          answer: 0,
+          explanation: "True. No underscore = public. Public attributes can be read and written directly from outside the class. The underscore prefixes (one for protected, two for private) are how Python signals that an attribute should NOT be touched directly from outside."
         }
       ],
       snapshot: `# basketball_player.py — page 2 complete
@@ -356,6 +379,20 @@ player1.set_injury_status("yes")       # Invalid. Status must be True or False.`
             { line: "print(player1.get_fitness())", explain: "We call the getter method to read the private data. We do not access player1.__fitness directly — we go through the controlled interface." },
             { line: "player1.set_fitness(999)", explain: "The setter receives 999, checks if 0 <= 999 <= 100 — it is not — so it runs the else branch and prints the rejection message. The private __fitness value is not changed." }
           ]
+        },
+        {
+          type: "checkpoint",
+          format: "multi",
+          heading: "Check 4 — Getters and setters",
+          question: `Look at these two methods inside a class:\n---code---\ndef get_score(self):\n    return self.__score\n\ndef set_score(self, value):\n    if 0 <= value <= 100:\n        self.__score = value\n    else:\n        print("Invalid score.")\n---code---\nTick BOTH correct statements — one about the <strong>getter</strong> and one about the <strong>setter</strong>. You must select both to be right.`,
+          options: [
+            "get_score() is the setter — it changes the value of __score.",
+            "get_score() is the getter — it returns the value of __score without changing it.",
+            "set_score() is the setter — it validates the new value and updates __score only if the value is acceptable.",
+            "set_score() is the getter — it reads __score and prints it to the screen."
+          ],
+          answers: [1, 2],
+          explanation: "A GETTER (like get_score) reads a private attribute and returns it without changing it. A SETTER (like set_score) updates a private attribute, but only after validating the new value — if validation fails, the change is rejected. Together they form a controlled interface to private data."
         }
       ],
       snapshot: `# basketball_player.py — page 4 complete
@@ -492,6 +529,20 @@ player1.set_injury_status("yes")`,
             { line: "player2.set_fitness(80)", explain: "The setter validates 80 — it is between 0 and 100 — so it updates the private attribute and prints confirmation." },
             { line: "player2.is_available()", explain: "Called again after updating Mia's fitness and injury status. Now both conditions pass — not injured and fitness >= 70 — so she is available. The same method gives a different result because the private data changed through the validated setter." }
           ]
+        },
+        {
+          type: "checkpoint",
+          format: "multi",
+          heading: "Check 5 — Truths about encapsulation",
+          question: "Which of the following are <strong>true</strong> about encapsulation? Tick ALL that apply — you must select the three correct statements (and avoid the one that is false) to be right.",
+          options: [
+            "Encapsulation protects data integrity by forcing changes to private attributes to go through validated setters.",
+            "A method inside the class is allowed to access private attributes directly using self.__attribute.",
+            "Encapsulation deletes private attributes whenever they are read from outside the class.",
+            "Encapsulation lets you change how private data is stored later, without breaking code that uses the public getters and setters."
+          ],
+          answers: [0, 1, 3],
+          explanation: "Setters validate before changing private data, protecting integrity (A). Methods INSIDE the class can read private attributes directly with self.__x (B). Encapsulation also makes refactoring safer — the internal storage can change without breaking outside code that uses the getters/setters (D). C is false: encapsulation never deletes attributes — it just controls who can change them and how."
         }
       ],
       snapshot: `# basketball_player.py — COMPLETE FILE

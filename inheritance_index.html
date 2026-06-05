@@ -1053,8 +1053,23 @@ function init() {
   document.title = TUTORIAL.title;
   renderNav();
   renderSidebar();
-  goToPage(0);
+  // Deep-link support: a link like inheritance_index.html#page=4 opens on page 4.
+  let start = 0;
+  const m = (location.hash || '').match(/page=(\d+)/);
+  if (m) {
+    const n = parseInt(m[1], 10) - 1;            // pages are 1-based in the URL
+    if (n >= 0 && n < TUTORIAL.pages.length) start = n;
+  }
+  goToPage(start);
 }
+// Respond to hash changes too (e.g. arriving from another tab/page)
+window.addEventListener('hashchange', () => {
+  const m = (location.hash || '').match(/page=(\d+)/);
+  if (m) {
+    const n = parseInt(m[1], 10) - 1;
+    if (n >= 0 && n < TUTORIAL.pages.length) goToPage(n);
+  }
+});
 
 // ── NAV DOTS ──
 function renderNav() {
@@ -1157,7 +1172,176 @@ function renderSection(s) {
   if (s.type === 'terms') return renderTerms(s);
   if (s.type === 'build') return renderBuild(s);
   if (s.type === 'warning') return renderWarningSection(s);
+  if (s.type === 'checkpoint') return renderCheckpoint(s);
   return renderInfoSection(s);
+}
+
+// ── INLINE CHECKPOINT QUESTIONS ──
+window.__checkpoints = window.__checkpoints || {};
+
+function renderCheckpoint(s) {
+  const id = 'cp_' + Math.random().toString(36).slice(2);
+  const format = s.format || 'fill';
+  window.__checkpoints[id] = { ...s, _answered: false };
+
+  const questionHtml = (s.question || '').split('---code---').map((part, i) =>
+    i % 2 === 1
+      ? `<pre class="q-code-block">${escHtml(part.trim())}</pre>`
+      : `<p style="margin-bottom:8px;">${part.trim().replace(/\n/g,'<br>')}</p>`
+  ).join('');
+
+  let body = '';
+
+  if (format === 'fill') {
+    body = `<div class="fill-row">
+      <input class="fill-input" id="fill_${id}" placeholder="${escHtml(s.placeholder || 'Type your answer...')}"
+        onkeydown="if(event.key==='Enter')checkCheckpointFill('${id}')">
+      <button class="fill-btn" id="fillbtn_${id}" onclick="checkCheckpointFill('${id}')">CHECK</button>
+    </div>`;
+  } else if (format === 'mcq' || format === 'truefalse') {
+    const letters = format === 'truefalse' ? ['T','F'] : ['A','B','C','D','E'];
+    body = `<div class="quiz-options" id="opts_${id}">`;
+    s.options.forEach((opt, i) => {
+      const isCode = opt.includes('\n');
+      body += `<button class="quiz-option" onclick="checkCheckpointMcq('${id}', ${i})">
+        <span class="option-letter">${letters[i]}</span>
+        ${isCode ? `<span class="option-code">${escHtml(opt)}</span>` : `<span>${escHtml(opt)}</span>`}
+      </button>`;
+    });
+    body += `</div>`;
+  } else if (format === 'multi') {
+    const letters = ['A','B','C','D','E'];
+    body = `<div class="quiz-options" id="opts_${id}">`;
+    s.options.forEach((opt, i) => {
+      const isCode = opt.includes('\n');
+      body += `<button class="quiz-option" id="opt_${id}_${i}" onclick="toggleCheckpointMulti('${id}', ${i})">
+        <span class="option-letter">${letters[i]}</span>
+        ${isCode ? `<span class="option-code">${escHtml(opt)}</span>` : `<span>${escHtml(opt)}</span>`}
+      </button>`;
+    });
+    body += `</div>
+      <button class="fill-btn" id="multibtn_${id}" onclick="checkCheckpointMulti('${id}')" style="margin-top:12px;">SUBMIT</button>`;
+  }
+
+  return `<div class="quiz-question" id="qq_${id}" style="margin:32px 0;">
+    <div class="q-num">CHECK YOUR UNDERSTANDING</div>
+    <div class="q-diff">${escHtml(s.heading || 'Quick check')}</div>
+    <div class="q-text">${questionHtml}</div>
+    ${body}
+    <div class="quiz-feedback" id="fb_${id}"></div>
+  </div>`;
+}
+
+function checkCheckpointFill(id) {
+  const cp = window.__checkpoints[id];
+  if (!cp || cp._answered) return;
+  const input = document.getElementById(`fill_${id}`);
+  const btn = document.getElementById(`fillbtn_${id}`);
+  const fb = document.getElementById(`fb_${id}`);
+  const val = input.value.trim().toLowerCase();
+  const isCorrect = cp.answers.some(a => a.trim().toLowerCase() === val);
+  if (isCorrect) {
+    input.disabled = true; btn.disabled = true;
+    input.classList.add('correct');
+    cp._answered = true;
+    fb.className = 'quiz-feedback show correct';
+    fb.textContent = '✓ Correct! ' + (cp.explanation || '');
+  } else {
+    input.classList.add('wrong');
+    fb.className = 'quiz-feedback show wrong';
+    fb.innerHTML = '✗ Not quite. ' + (cp.explanation || '') +
+      ` <button onclick="retryCheckpointFill('${id}')" style="margin-left:8px;padding:3px 10px;font-size:0.75rem;border:1px solid #991b1b;border-radius:4px;background:transparent;color:#ff8899;cursor:pointer;">Try again</button>`;
+  }
+}
+
+function retryCheckpointFill(id) {
+  const input = document.getElementById(`fill_${id}`);
+  input.classList.remove('wrong','correct');
+  input.value = ''; input.disabled = false;
+  document.getElementById(`fillbtn_${id}`).disabled = false;
+  const fb = document.getElementById(`fb_${id}`);
+  fb.className = 'quiz-feedback'; fb.innerHTML = '';
+  input.focus();
+}
+
+function checkCheckpointMcq(id, selectedIndex) {
+  const cp = window.__checkpoints[id];
+  if (!cp || cp._answered) return;
+  const opts = document.querySelectorAll(`#opts_${id} .quiz-option`);
+  const fb = document.getElementById(`fb_${id}`);
+  const isCorrect = selectedIndex === cp.answer;
+  opts.forEach(o => o.classList.add('locked'));
+  if (isCorrect) {
+    opts[selectedIndex].classList.add('correct');
+    cp._answered = true;
+    fb.className = 'quiz-feedback show correct';
+    fb.textContent = '✓ Correct! ' + (cp.explanation || '');
+  } else {
+    opts[selectedIndex].classList.add('wrong');
+    if (typeof cp.answer === 'number') opts[cp.answer].classList.add('correct');
+    fb.className = 'quiz-feedback show wrong';
+    fb.innerHTML = '✗ Not quite. ' + (cp.explanation || '') +
+      ` <button onclick="retryCheckpointMcq('${id}')" style="margin-left:8px;padding:3px 10px;font-size:0.75rem;border:1px solid #991b1b;border-radius:4px;background:transparent;color:#ff8899;cursor:pointer;">Try again</button>`;
+  }
+}
+
+function retryCheckpointMcq(id) {
+  const opts = document.querySelectorAll(`#opts_${id} .quiz-option`);
+  opts.forEach(o => o.classList.remove('locked','correct','wrong'));
+  const fb = document.getElementById(`fb_${id}`);
+  fb.className = 'quiz-feedback'; fb.innerHTML = '';
+}
+
+function toggleCheckpointMulti(id, index) {
+  const cp = window.__checkpoints[id];
+  if (!cp || cp._answered) return;
+  const btn = document.getElementById(`opt_${id}_${index}`);
+  btn.classList.toggle('selected');
+  const on = btn.classList.contains('selected');
+  btn.style.borderColor = on ? '#00e5ff' : '';
+  btn.style.background = on ? 'rgba(0,229,255,0.08)' : '';
+}
+
+function checkCheckpointMulti(id) {
+  const cp = window.__checkpoints[id];
+  if (!cp || cp._answered) return;
+  const opts = document.querySelectorAll(`#opts_${id} .quiz-option`);
+  const fb = document.getElementById(`fb_${id}`);
+  const selected = [];
+  opts.forEach((o, i) => { if (o.classList.contains('selected')) selected.push(i); });
+  const required = [...cp.answers].sort((a,b)=>a-b);
+  const got = [...selected].sort((a,b)=>a-b);
+  const isCorrect = required.length === got.length && required.every((v,i) => v === got[i]);
+  if (isCorrect) {
+    cp._answered = true;
+    opts.forEach((o, i) => {
+      o.classList.add('locked');
+      if (required.includes(i)) o.classList.add('correct');
+      o.style.borderColor = ''; o.style.background = '';
+    });
+    document.getElementById(`multibtn_${id}`).disabled = true;
+    fb.className = 'quiz-feedback show correct';
+    fb.textContent = '✓ Correct! ' + (cp.explanation || '');
+  } else {
+    opts.forEach((o, i) => {
+      o.classList.remove('correct','wrong');
+      if (required.includes(i) && !got.includes(i)) o.classList.add('wrong');
+      if (!required.includes(i) && got.includes(i)) o.classList.add('wrong');
+    });
+    fb.className = 'quiz-feedback show wrong';
+    fb.innerHTML = '✗ Not quite — you must tick ALL correct options (and only those). ' + (cp.explanation || '') +
+      ` <button onclick="retryCheckpointMulti('${id}')" style="margin-left:8px;padding:3px 10px;font-size:0.75rem;border:1px solid #991b1b;border-radius:4px;background:transparent;color:#ff8899;cursor:pointer;">Try again</button>`;
+  }
+}
+
+function retryCheckpointMulti(id) {
+  const opts = document.querySelectorAll(`#opts_${id} .quiz-option`);
+  opts.forEach(o => {
+    o.classList.remove('selected','correct','wrong','locked');
+    o.style.borderColor = ''; o.style.background = '';
+  });
+  const fb = document.getElementById(`fb_${id}`);
+  fb.className = 'quiz-feedback'; fb.innerHTML = '';
 }
 
 function renderInfoSection(s) {

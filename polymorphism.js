@@ -72,6 +72,20 @@ const TUTORIAL = {
             { term: "Interface", definition: "The set of method names that objects share. Polymorphism works because objects share the same method names like play(), even though the code inside each is different." },
             { term: "super()", definition: "Calls the parent class constructor from inside a child class constructor — sets up inherited instance variables without repeating code" }
           ]
+        },
+        {
+          type: "checkpoint",
+          format: "mcq",
+          heading: "Check 1 — What is polymorphism?",
+          question: "Which sentence best describes <strong>polymorphism</strong> in Object-Oriented Programming?",
+          options: [
+            "A child class deletes the parent's method so the two classes cannot share any code.",
+            "Different objects can respond to the same method call in their own way.",
+            "Two unrelated classes are merged into one class with a single method.",
+            "A method is renamed so its name matches an existing function in the file."
+          ],
+          answer: 1,
+          explanation: "Polymorphism literally means \"many forms\" — the same method name (e.g. play()) can produce different behaviour depending on which object it is called on. The other options describe things that are not polymorphism."
         }
       ],
       snapshot: null
@@ -138,6 +152,15 @@ generic.tune()      # Yamaha is being tuned...`,
             { line: "generic = Instrument(\"Yamaha\", 4)", explain: "Creates one instance of Instrument. Python calls __init__ automatically with brand='Yamaha' and num_parts=4." },
             { line: "generic.play()", explain: "Calls the default play() from the parent class. When Guitar, DrumKit, and Piano are added, each will have their own version of play() — the parent version will no longer be used for those child class objects." }
           ]
+        },
+        {
+          type: "checkpoint",
+          format: "truefalse",
+          heading: "Check 2 — Default methods",
+          question: "True or False? A <strong>default method</strong> defined in a parent class can be overridden by a child class. When you call that method on a child class object, Python uses the child's version — not the parent's default.",
+          options: ["True", "False"],
+          answer: 0,
+          explanation: "True. A default method in the parent class acts as a fallback. If a child class writes its own version with the same name, Python uses the child's version whenever the method is called on a child class object. This is exactly how Guitar, DrumKit and Piano will each replace Instrument's default play() on the next pages."
         }
       ],
       snapshot: `# band_instruments.py — page 2 complete
@@ -231,6 +254,20 @@ guitar.bend_string() # UNIQUE — only Guitar has this`,
             { line: "guitar.play()", explain: "Guitar DOES have its own play() method — it overrides the parent's version. Python finds Guitar's version first and uses it. This is polymorphism — same method name, different result depending on the object." },
             { line: "guitar.bend_string()", explain: "Only works on guitar. If you tried generic.bend_string() Python would raise an error — Instrument does not have that method." }
           ]
+        },
+        {
+          type: "checkpoint",
+          format: "multi",
+          heading: "Check 3 — Inherited vs unique methods",
+          question: "Look at the Guitar class you just wrote. It does not redefine <code>describe()</code>, but it does add a new method <code>bend_string()</code>. Tick BOTH correct statements — one about an <strong>inherited</strong> method and one about a <strong>unique</strong> method. You must select both to be right.",
+          options: [
+            "describe() is inherited from the parent class — Guitar uses the parent's version without rewriting it.",
+            "describe() is unique to Guitar — only Guitar objects have this method.",
+            "bend_string() is unique to Guitar — only Guitar objects can call it.",
+            "bend_string() is inherited from the parent — every Instrument can call it."
+          ],
+          answers: [0, 2],
+          explanation: "describe() is defined in the parent class and the child has not overridden it, so Guitar uses the parent's version (inherited). bend_string() is written only in the Guitar class, so only Guitar objects can call it (unique). Inherited methods come from the parent; unique methods belong only to the child."
         }
       ],
       snapshot: `# band_instruments.py — page 3 complete
@@ -371,6 +408,20 @@ piano.arpeggio()`,
             { line: "for instrument in band: instrument.play()", explain: "This is polymorphism in action. The loop does not know or care whether each object is a Guitar, DrumKit, or Piano. It just calls play() on whatever is in the list. Python looks at the actual type of each object and calls that class's version of play() automatically. One loop, three completely different results." },
             { line: "for instrument in band: instrument.tune()", explain: "tune() is not overridden by any child class — they all inherit the same version from Instrument. This shows that inherited methods work in the polymorphism loop too." }
           ]
+        },
+        {
+          type: "checkpoint",
+          format: "mcq",
+          heading: "Check 4 — How the polymorphism loop works",
+          question: `Look at the loop you just wrote:\n---code---\nband = [guitar, drums, piano]\nfor instrument in band:\n    instrument.play()\n---code---\nHow does Python decide which version of <code>play()</code> to call on each pass through the loop?`,
+          options: [
+            "Python uses the variable name (guitar, drums, piano) to figure out which class to use.",
+            "Python always calls the parent class's version because every object is an Instrument.",
+            "Python looks at the actual class of each object at runtime and calls that class's version of play().",
+            "Python raises an error because three different classes cannot live in the same list."
+          ],
+          answer: 2,
+          explanation: "At runtime Python checks the actual class of each object — Guitar, then DrumKit, then Piano — and calls that class's overridden play() method. The variable name doesn't matter. This automatic 'right method for the right object' selection is the heart of polymorphism."
         }
       ],
       snapshot: `# band_instruments.py — page 4 complete
@@ -471,6 +522,20 @@ piano.arpeggio()`
 ✅ <strong>The loop</strong> — one call to play() on each object in the band list. Python automatically uses the right version for each object. This is polymorphism.<br><br>
 ✅ <strong>tune()</strong> — an inherited method that works on all three child class objects without being overridden. Same method, same result — this shows inheritance working alongside polymorphism.`,
           callout: `The most important line in the whole tutorial is: <code>for instrument in band: instrument.play()</code> — one loop, one method name, three completely different results, all handled automatically by Python.`
+        },
+        {
+          type: "checkpoint",
+          format: "multi",
+          heading: "Check 5 — Truths about polymorphism",
+          question: "Which of the following are <strong>true</strong> about polymorphism? Tick ALL that apply — you must select the three correct statements (and avoid the one that is false) to be right.",
+          options: [
+            "Polymorphism lets one method name produce different behaviour depending on the object it is called on.",
+            "Polymorphism works because all the child classes share the same method name (e.g. play()).",
+            "Polymorphism only works inside a for loop — outside a loop it does nothing.",
+            "Polymorphism makes code easier to extend — you can add a new child class and existing loops keep working without changes."
+          ],
+          answers: [0, 1, 3],
+          explanation: "Polymorphism = same method name, different behaviour per object (A). It only works because the children share the same method name (B). It makes code extensible — a new child class slots into existing loops automatically (D). C is false: polymorphism happens every time the method is called on a child object, in or out of a loop."
         }
       ],
       snapshot: `# band_instruments.py — COMPLETE FILE

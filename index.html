@@ -7,333 +7,128 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg-deep:    #060818;
-    --bg-card:    #0d1227;
-    --bg-panel:   #111836;
-    --gold:       #f0c040;
-    --gold-dim:   #a07c20;
-    --gold-faint: #f0c04018;
-    --cyan:       #00e5ff;
-    --cyan-dim:   #007a8a;
-    --purple:     #9b59f5;
-    --purple-dim: #4a2a80;
-    --green:      #39ff14;
-    --red:        #ff4466;
-    --text:       #c8d8f0;
-    --text-dim:   #6a7a9a;
-    --border:     #1e2e55;
-    --glow-gold:  0 0 24px #f0c04055;
-    --glow-cyan:  0 0 24px #00e5ff44;
-    --glow-purple:0 0 24px #9b59f544;
+    --bg-deep:    #2b3a52;
+    --bg-deep2:   #1f2c40;
+    --bg-card:    #34465f;
+    --gold:       #e8b54a;
+    --gold-dim:   #b88830;
+    --cyan:       #4fc8d8;
+    --cyan-dim:   #2f8893;
+    --purple:     #a986e0;
+    --purple-dim: #6a4f9a;
+    --teal:       #4bb892;
+    --teal-dim:   #2f8166;
+    --bronze:     #d0a05c;
+    --bronze-dim: #aa783c;
+    --crimson:    #c8584e;
+    --crimson-dim:#8f3a33;
+    --text:       #e8eef6;
+    --text-dim:   #9eb0c8;
+    --border:     #45566e;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
-    background: var(--bg-deep);
+    background: linear-gradient(160deg, var(--bg-deep), var(--bg-deep2));
     color: var(--text);
     font-family: 'Exo 2', sans-serif;
     font-weight: 300;
     min-height: 100vh;
     overflow-x: hidden;
   }
-
-  /* starfield */
+  /* faint starfield */
   body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
     background-image:
-      radial-gradient(1px 1px at 8%  12%, #ffffff28 0%, transparent 100%),
-      radial-gradient(1px 1px at 22% 38%, #ffffff18 0%, transparent 100%),
-      radial-gradient(1px 1px at 47%  8%, #ffffff22 0%, transparent 100%),
-      radial-gradient(1px 1px at 63% 28%, #ffffff18 0%, transparent 100%),
-      radial-gradient(1px 1px at 81% 55%, #ffffff22 0%, transparent 100%),
-      radial-gradient(1px 1px at 35% 75%, #ffffff18 0%, transparent 100%),
-      radial-gradient(1px 1px at 57% 68%, #ffffff20 0%, transparent 100%),
-      radial-gradient(1px 1px at 88% 82%, #ffffff15 0%, transparent 100%),
-      radial-gradient(1px 1px at 14% 88%, #ffffff22 0%, transparent 100%),
-      radial-gradient(1px 1px at 72% 15%, #ffffff18 0%, transparent 100%),
-      radial-gradient(1px 1px at 93% 40%, #ffffff20 0%, transparent 100%),
-      radial-gradient(1px 1px at 5%  55%, #ffffff15 0%, transparent 100%);
-    pointer-events: none;
-    z-index: 0;
+      radial-gradient(1px 1px at 8% 12%, #ffffff22 0%, transparent 100%),
+      radial-gradient(1px 1px at 22% 38%, #ffffff14 0%, transparent 100%),
+      radial-gradient(1px 1px at 47% 8%, #ffffff1c 0%, transparent 100%),
+      radial-gradient(1px 1px at 63% 28%, #ffffff14 0%, transparent 100%),
+      radial-gradient(1px 1px at 81% 55%, #ffffff1c 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 75%, #ffffff14 0%, transparent 100%),
+      radial-gradient(1px 1px at 88% 82%, #ffffff12 0%, transparent 100%),
+      radial-gradient(1px 1px at 14% 88%, #ffffff1c 0%, transparent 100%),
+      radial-gradient(1px 1px at 93% 40%, #ffffff16 0%, transparent 100%);
   }
+  .page { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 4rem 2rem 4rem; }
 
-  /* nebula glow */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse at 15% 40%, #1a0a3a28 0%, transparent 55%),
-      radial-gradient(ellipse at 85% 20%, #0a1a3a28 0%, transparent 55%),
-      radial-gradient(ellipse at 50% 90%, #0a2a1a18 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
-  }
+  .hero { text-align: center; margin-bottom: 2.6rem; animation: fadeDown 0.7s ease both; }
+  .hero-eyebrow { font-family: 'Orbitron', sans-serif; font-size: 0.65rem; letter-spacing: 4px; color: var(--bronze); text-transform: uppercase; margin-bottom: 1.1rem; }
+  .hero-title { font-family: 'Cinzel Decorative', serif; font-size: clamp(2rem, 5vw, 3.4rem); color: var(--gold); text-shadow: 0 2px 18px #00000050; line-height: 1.15; margin-bottom: 1rem; }
+  .hero-sub { font-size: 1rem; color: var(--text-dim); max-width: 540px; margin: 0 auto; line-height: 1.7; }
+  .divider { width: 220px; height: 1px; background: linear-gradient(90deg, transparent, var(--bronze), transparent); margin: 0 auto 2.6rem; animation: fadeIn 1s ease 0.3s both; }
 
-  /* ── LAYOUT ── */
-  .page {
-    position: relative;
-    z-index: 1;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 4rem 2rem 5rem;
-  }
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; width: 100%; max-width: 1080px; }
 
-  /* ── HERO ── */
-  .hero {
-    text-align: center;
-    margin-bottom: 3.5rem;
-    animation: fadeDown 0.8s ease both;
-  }
-
-  .hero-eyebrow {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.65rem;
-    letter-spacing: 4px;
-    color: var(--cyan);
-    text-transform: uppercase;
-    margin-bottom: 1.2rem;
-    opacity: 0.85;
-  }
-
-  .hero-title {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: clamp(2rem, 5vw, 3.4rem);
-    color: var(--gold);
-    text-shadow: var(--glow-gold);
-    line-height: 1.15;
-    margin-bottom: 1.2rem;
-    letter-spacing: 1px;
-  }
-
-  .hero-sub {
-    font-family: 'Exo 2', sans-serif;
-    font-size: 1rem;
-    font-weight: 300;
-    color: var(--text-dim);
-    max-width: 520px;
-    margin: 0 auto;
-    line-height: 1.7;
-  }
-
-  /* ── DIVIDER ── */
-  .divider {
-    width: 220px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
-    margin: 0 auto 3rem;
-    animation: fadeIn 1s ease 0.3s both;
-  }
-
-  /* ── GRID ── */
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    width: 100%;
-    max-width: 1000px;
-  }
-
-  /* ── CARD ── */
   .card {
-    position: relative;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2rem 1.75rem 1.75rem;
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    overflow: hidden;
+    position: relative; background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.8rem 1.6rem 1.5rem; text-decoration: none;
+    display: flex; flex-direction: column; overflow: hidden;
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-    animation: fadeUp 0.7s ease both;
+    animation: fadeUp 0.6s ease both;
   }
-
-  .card:nth-child(1) { animation-delay: 0.15s; }
-  .card:nth-child(2) { animation-delay: 0.28s; }
-  .card:nth-child(3) { animation-delay: 0.41s; }
-  .card:nth-child(4) { animation-delay: 0.54s; }
-
-  /* top accent bar */
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    border-radius: 12px 12px 0 0;
-    transition: opacity 0.25s;
-    opacity: 0.7;
-  }
-
-  /* hover glow behind card */
-  .card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 12px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-  }
-
+  .card:nth-child(1){animation-delay:.10s;} .card:nth-child(2){animation-delay:.18s;}
+  .card:nth-child(3){animation-delay:.26s;} .card:nth-child(4){animation-delay:.34s;}
+  .card:nth-child(5){animation-delay:.42s;} .card:nth-child(6){animation-delay:.50s;}
+  .card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:12px 12px 0 0; opacity:.85; }
   .card:hover { transform: translateY(-5px); }
-  .card:hover::after { opacity: 1; }
-  .card:hover::before { opacity: 1; }
 
-  /* ── CARD COLOUR THEMES ── */
+  /* per-topic accents (each previews its destination) */
+  .card-inheritance::before{background:linear-gradient(90deg,var(--gold),#ef9f27);}
+  .card-inheritance:hover{border-color:var(--gold-dim);box-shadow:0 8px 36px #e8b54a28;}
+  .card-inheritance .card-icon,.card-inheritance .card-title,.card-inheritance .card-arrow{color:var(--gold);}
+  .card-inheritance .card-label{color:var(--gold-dim);}
 
-  /* OOP — teal/blue (light editorial feel against dark) */
-  .card-oop { border-color: #1e3a4a; }
-  .card-oop::before { background: linear-gradient(90deg, #1d9e75, #378add); }
-  .card-oop:hover   { border-color: #1d9e75; box-shadow: 0 8px 40px #1d9e7530; }
-  .card-oop::after  { background: radial-gradient(ellipse at 50% 0%, #1d9e7512, transparent 70%); }
-  .card-oop .card-icon  { color: #1d9e75; }
-  .card-oop .card-label { color: #1d9e75; }
-  .card-oop .card-title { color: #e1f5ee; }
-  .card-oop .card-arrow { color: #1d9e75; }
+  .card-encapsulation::before{background:linear-gradient(90deg,var(--cyan),#3a9bc8);}
+  .card-encapsulation:hover{border-color:var(--cyan-dim);box-shadow:0 8px 36px #4fc8d824;}
+  .card-encapsulation .card-icon,.card-encapsulation .card-title,.card-encapsulation .card-arrow{color:var(--cyan);}
+  .card-encapsulation .card-label{color:var(--cyan-dim);}
 
-  /* Inheritance — gold/amber */
-  .card-inheritance { border-color: #2e2010; }
-  .card-inheritance::before { background: linear-gradient(90deg, var(--gold), #ef9f27); }
-  .card-inheritance:hover   { border-color: var(--gold-dim); box-shadow: var(--glow-gold), 0 8px 40px #f0c04020; }
-  .card-inheritance::after  { background: radial-gradient(ellipse at 50% 0%, #f0c04012, transparent 70%); }
-  .card-inheritance .card-icon  { color: var(--gold); }
-  .card-inheritance .card-label { color: var(--gold-dim); }
-  .card-inheritance .card-title { color: var(--gold); }
-  .card-inheritance .card-arrow { color: var(--gold); }
+  .card-polymorphism::before{background:linear-gradient(90deg,var(--purple),#c76fa0);}
+  .card-polymorphism:hover{border-color:var(--purple-dim);box-shadow:0 8px 36px #a986e028;}
+  .card-polymorphism .card-icon,.card-polymorphism .card-title,.card-polymorphism .card-arrow{color:var(--purple);}
+  .card-polymorphism .card-label{color:var(--purple-dim);}
 
-  /* Encapsulation — cyan */
-  .card-encapsulation { border-color: #0a2535; }
-  .card-encapsulation::before { background: linear-gradient(90deg, var(--cyan), #378add); }
-  .card-encapsulation:hover   { border-color: var(--cyan-dim); box-shadow: var(--glow-cyan), 0 8px 40px #00e5ff18; }
-  .card-encapsulation::after  { background: radial-gradient(ellipse at 50% 0%, #00e5ff10, transparent 70%); }
-  .card-encapsulation .card-icon  { color: var(--cyan); }
-  .card-encapsulation .card-label { color: var(--cyan-dim); }
-  .card-encapsulation .card-title { color: var(--cyan); }
-  .card-encapsulation .card-arrow { color: var(--cyan); }
+  .card-oop::before{background:linear-gradient(90deg,var(--teal),#3a9bc8);}
+  .card-oop:hover{border-color:var(--teal-dim);box-shadow:0 8px 36px #4bb89224;}
+  .card-oop .card-icon,.card-oop .card-title,.card-oop .card-arrow{color:var(--teal);}
+  .card-oop .card-label{color:var(--teal-dim);}
 
-  /* Polymorphism — purple */
-  .card-polymorphism { border-color: #1e1040; }
-  .card-polymorphism::before { background: linear-gradient(90deg, var(--purple), #d4537e); }
-  .card-polymorphism:hover   { border-color: var(--purple-dim); box-shadow: var(--glow-purple), 0 8px 40px #9b59f520; }
-  .card-polymorphism::after  { background: radial-gradient(ellipse at 50% 0%, #9b59f510, transparent 70%); }
-  .card-polymorphism .card-icon  { color: var(--purple); }
-  .card-polymorphism .card-label { color: var(--purple-dim); }
-  .card-polymorphism .card-title { color: var(--purple); }
-  .card-polymorphism .card-arrow { color: var(--purple); }
+  .card-gamecreation::before{background:linear-gradient(90deg,var(--bronze),#e8b54a);}
+  .card-gamecreation:hover{border-color:var(--bronze-dim);box-shadow:0 8px 36px #d0a05c2c;}
+  .card-gamecreation .card-icon,.card-gamecreation .card-title,.card-gamecreation .card-arrow{color:var(--bronze);}
+  .card-gamecreation .card-label{color:var(--bronze-dim);}
 
-  /* ── CARD INTERNALS ── */
-  .card-icon {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    display: block;
-    filter: drop-shadow(0 0 8px currentColor);
-  }
+  .card-ironwall::before{background:linear-gradient(90deg,var(--crimson),#e07a4a);}
+  .card-ironwall:hover{border-color:var(--crimson-dim);box-shadow:0 8px 36px #c8584e2c;}
+  .card-ironwall .card-icon,.card-ironwall .card-title,.card-ironwall .card-arrow{color:var(--crimson);}
+  .card-ironwall .card-label{color:var(--crimson-dim);}
 
-  .card-label {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.58rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-    font-weight: 400;
-  }
-
-  .card-title {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 1.05rem;
-    line-height: 1.3;
-    margin-bottom: 0.85rem;
-    letter-spacing: 0.5px;
-  }
-
-  .card-desc {
-    font-size: 0.82rem;
-    font-weight: 300;
-    color: var(--text-dim);
-    line-height: 1.65;
-    flex: 1;
-    margin-bottom: 1.5rem;
-  }
-
-  .card-theme {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--text-dim);
-    opacity: 0.6;
-    margin-bottom: 1.25rem;
-  }
-
-  .card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid var(--border);
-    padding-top: 1rem;
-    margin-top: auto;
-  }
-
-  .card-cta {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.6rem;
-    letter-spacing: 2px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-  }
-
-  .card-arrow {
-    font-size: 1.1rem;
-    transition: transform 0.2s ease;
-  }
-
+  .card-icon { font-size: 1.9rem; margin-bottom: .9rem; display:block; }
+  .card-label { font-family:'Orbitron',sans-serif; font-size:.56rem; letter-spacing:3px; text-transform:uppercase; margin-bottom:.5rem; }
+  .card-title { font-family:'Cinzel Decorative',serif; font-size:1.05rem; line-height:1.3; margin-bottom:.8rem; }
+  .card-desc { font-size:.82rem; color:var(--text-dim); line-height:1.6; flex:1; margin-bottom:1.2rem; }
+  .card-theme { font-family:'Share Tech Mono',monospace; font-size:.7rem; color:var(--text-dim); opacity:.6; margin-bottom:1.1rem; }
+  .card-footer { display:flex; align-items:center; justify-content:space-between; border-top:1px solid var(--border); padding-top:.9rem; margin-top:auto; }
+  .card-cta { font-family:'Orbitron',sans-serif; font-size:.58rem; letter-spacing:2px; color:var(--text-dim); text-transform:uppercase; }
+  .card-arrow { font-size:1.1rem; transition:transform .2s ease; }
   .card:hover .card-arrow { transform: translateX(5px); }
+  .badge-bonus { position:absolute; top:14px; right:14px; font-family:'Orbitron',sans-serif; font-size:.5rem; letter-spacing:1.5px; color:#2a2012; background:var(--bronze); padding:3px 8px; border-radius:20px; }
 
-  /* ── FOOTER NOTE ── */
-  .page-footer {
-    margin-top: 3.5rem;
-    text-align: center;
-    animation: fadeIn 1s ease 0.8s both;
-  }
+  .util { margin-top: 2.4rem; animation: fadeIn 1s ease .9s both; }
+  .util a { font-family:'Orbitron',sans-serif; font-size:.66rem; letter-spacing:2px; color:var(--text-dim); text-decoration:none; border:1px solid var(--border); border-radius:20px; padding:9px 18px; transition:all .2s; }
+  .util a:hover { color:var(--bronze); border-color:var(--bronze); }
+  .page-footer { margin-top: 2rem; text-align:center; animation: fadeIn 1s ease 1s both; }
+  .page-footer p { font-family:'Orbitron',sans-serif; font-size:.56rem; letter-spacing:3px; color:var(--text-dim); opacity:.5; text-transform:uppercase; }
 
-  .page-footer p {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.58rem;
-    letter-spacing: 3px;
-    color: var(--text-dim);
-    opacity: 0.5;
-    text-transform: uppercase;
-  }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-20px);} to{opacity:1;transform:translateY(0);} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
+  @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
 
-  /* ── ANIMATIONS ── */
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 600px) {
-    .hero-title { font-size: 1.6rem; }
-    .card-grid  { grid-template-columns: 1fr; }
-    .page       { padding: 3rem 1.25rem 4rem; }
-  }
+  @media (max-width: 860px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .card-grid { grid-template-columns: 1fr; } .page { padding: 3rem 1.25rem; } }
 </style>
 </head>
 <body>
-
 <div class="page">
 
   <div class="hero">
@@ -346,58 +141,67 @@
 
   <div class="card-grid">
 
-    <!-- OOP Series -->
-    <a class="card card-oop" href="OOP_tutorial.html">
-      <span class="card-icon">🎓</span>
-      <span class="card-label">Start here</span>
-      <h2 class="card-title">OOP Tutorial Series</h2>
-      <p class="card-desc">Six step-by-step tutorials that introduce Object-Oriented Programming as you build a complete Student Study Aid application.</p>
-      <p class="card-theme">// study_aid.py · Tutorials 1–6</p>
-      <div class="card-footer">
-        <span class="card-cta">Begin series</span>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <!-- Inheritance -->
+    <!-- ROW 1 -->
     <a class="card card-inheritance" href="inheritance_index.html">
       <span class="card-icon">⚔️</span>
       <span class="card-label">Topic</span>
       <h2 class="card-title">Inheritance</h2>
       <p class="card-desc">Build a game character system using parent and child classes. Learn how subclasses inherit and extend behaviour from a base class.</p>
       <p class="card-theme">// Warrior · Archer · Thief</p>
-      <div class="card-footer">
-        <span class="card-cta">Start tutorial</span>
-        <span class="card-arrow">→</span>
-      </div>
+      <div class="card-footer"><span class="card-cta">Start tutorial</span><span class="card-arrow">→</span></div>
     </a>
 
-    <!-- Encapsulation -->
     <a class="card card-encapsulation" href="encapsulation_index.html">
       <span class="card-icon">🏀</span>
       <span class="card-label">Topic</span>
       <h2 class="card-title">Encapsulation</h2>
       <p class="card-desc">Build a basketball player management system. Explore public, protected, and private attributes and why hiding data matters.</p>
       <p class="card-theme">// BasketballPlayer class</p>
-      <div class="card-footer">
-        <span class="card-cta">Start tutorial</span>
-        <span class="card-arrow">→</span>
-      </div>
+      <div class="card-footer"><span class="card-cta">Start tutorial</span><span class="card-arrow">→</span></div>
     </a>
 
-    <!-- Polymorphism -->
     <a class="card card-polymorphism" href="polymorphism_index.html">
       <span class="card-icon">🎵</span>
       <span class="card-label">Topic</span>
       <h2 class="card-title">Polymorphism</h2>
       <p class="card-desc">Build a band of instruments using parent and child classes. See how the same method call produces different behaviour across objects.</p>
       <p class="card-theme">// Guitar · DrumKit · Piano</p>
-      <div class="card-footer">
-        <span class="card-cta">Start tutorial</span>
-        <span class="card-arrow">→</span>
-      </div>
+      <div class="card-footer"><span class="card-cta">Start tutorial</span><span class="card-arrow">→</span></div>
     </a>
 
+    <!-- ROW 2 -->
+    <a class="card card-oop" href="OOP_tutorial.html">
+      <span class="card-icon">🎓</span>
+      <span class="card-label">Start here</span>
+      <h2 class="card-title">OOP Tutorial Series</h2>
+      <p class="card-desc">Six step-by-step tutorials that introduce Object-Oriented Programming as you build a complete Student Study Aid application.</p>
+      <p class="card-theme">// study_aid.py · Tutorials 1–6</p>
+      <div class="card-footer"><span class="card-cta">Begin series</span><span class="card-arrow">→</span></div>
+    </a>
+
+    <a class="card card-gamecreation" href="game_creation_index.html">
+      <span class="badge-bonus">Bonus</span>
+      <span class="card-icon">🛠️</span>
+      <span class="card-label">Skill developer</span>
+      <h2 class="card-title">Game Creation</h2>
+      <p class="card-desc">Put your inheritance skills to work: build the Ironwall game yourself, from enemy classes to a text battle to a real game with images.</p>
+      <p class="card-theme">// build ironwall.py</p>
+      <div class="card-footer"><span class="card-cta">Take the challenge</span><span class="card-arrow">→</span></div>
+    </a>
+
+    <a class="card card-ironwall" href="ironwall.html">
+      <span class="card-icon">🏰</span>
+      <span class="card-label">The game</span>
+      <h2 class="card-title">Ironwall</h2>
+      <p class="card-desc">Play the finished game. Three defenders hold the castle against waves of rogues — an auto-battler built entirely from OOP, with images and animation.</p>
+      <p class="card-theme">// Python + pygame</p>
+      <div class="card-footer"><span class="card-cta">Play the game</span><span class="card-arrow">→</span></div>
+    </a>
+
+  </div>
+
+  <div class="util">
+    <a href="pygame_setup.html">⚙ Setup help: Installing pygame</a>
   </div>
 
   <footer class="page-footer">
@@ -405,7 +209,6 @@
   </footer>
 
 </div>
-
 </body>
 </html>
 
