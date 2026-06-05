@@ -221,6 +221,14 @@ except AttributeError as e:
             { line: "print(player1.__fitness)", explain: "This raises an AttributeError. Python has hidden __fitness using name mangling. The attribute exists but it has been renamed to _BasketballPlayer__fitness internally. Accessing it as __fitness from outside the class does not work — this is encapsulation in action." }
           ],
           note: `The try/except block is just so your code does not completely stop when the error occurs. In a real program you would not try to access private attributes directly at all — you would use getters and setters, which you will add on the next page.`
+        },
+        {
+          type: "checkpoint",
+          heading: "Fill in the blank — private attributes",
+          question: `Private attributes are a new concept, so let&#39;s check it has stuck. In the constructor below, the blank should declare a <strong>private</strong> attribute called <code>injured</code>. Type the missing line exactly as it would appear in Python.\n---code---\nclass BasketballPlayer:\n    def __init__(self, name, injured):\n        self.name = name\n        ______________ = injured\n---code---`,
+          answers: ["self.__injured", "self.__injured = injured"],
+          placeholder: "e.g. self.something",
+          explanation: "A private attribute uses TWO underscores before the name — self.__injured. Python then applies name mangling so it cannot be accessed directly from outside the class. One underscore would make it protected (convention only); no underscore would make it public."
         }
       ],
       snapshot: `# basketball_player.py — page 3 complete

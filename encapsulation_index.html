@@ -1157,7 +1157,68 @@ function renderSection(s) {
   if (s.type === 'terms') return renderTerms(s);
   if (s.type === 'build') return renderBuild(s);
   if (s.type === 'warning') return renderWarningSection(s);
+  if (s.type === 'checkpoint') return renderCheckpoint(s);
   return renderInfoSection(s);
+}
+
+function renderCheckpoint(s) {
+  const id = 'cp_' + Math.random().toString(36).slice(2);
+  const answers = encodeURIComponent(JSON.stringify(s.answers));
+  const explanation = encodeURIComponent(s.explanation || '');
+  const placeholder = s.placeholder || 'Type your answer...';
+  const questionHtml = s.question.split('---code---').map((part, i) =>
+    i % 2 === 1
+      ? `<pre class="q-code-block">${escHtml(part.trim())}</pre>`
+      : `<p style="margin-bottom:8px;">${part.trim().replace(/\n/g,'<br>')}</p>`
+  ).join('');
+  return `<div class="quiz-question" id="qq_${id}" style="margin:32px 0;">
+    <div class="q-num">CHECK YOUR UNDERSTANDING</div>
+    <div class="q-diff">${escHtml(s.heading || 'Fill in the blank')}</div>
+    <div class="q-text">${questionHtml}</div>
+    <div class="fill-row">
+      <input class="fill-input" id="fill_${id}" placeholder="${escHtml(placeholder)}"
+        data-answers="${answers}" data-explanation="${explanation}"
+        onkeydown="if(event.key==='Enter')checkCheckpoint('${id}')">
+      <button class="fill-btn" id="fillbtn_${id}" onclick="checkCheckpoint('${id}')">CHECK</button>
+    </div>
+    <div class="quiz-feedback" id="fb_${id}"></div>
+  </div>`;
+}
+
+function checkCheckpoint(id) {
+  const input = document.getElementById(`fill_${id}`);
+  const btn = document.getElementById(`fillbtn_${id}`);
+  const fb = document.getElementById(`fb_${id}`);
+  if (input.disabled) return;
+  const answers = JSON.parse(decodeURIComponent(input.dataset.answers));
+  const explanation = decodeURIComponent(input.dataset.explanation);
+  const val = input.value.trim().toLowerCase();
+  const isCorrect = answers.some(a => a.trim().toLowerCase() === val);
+  if (isCorrect) {
+    input.disabled = true;
+    btn.disabled = true;
+    input.classList.remove('wrong');
+    input.classList.add('correct');
+    fb.className = 'quiz-feedback show correct';
+    fb.textContent = '✓ Correct! ' + explanation;
+  } else {
+    input.classList.add('wrong');
+    fb.className = 'quiz-feedback show wrong';
+    fb.innerHTML = '✗ Not quite. ' + explanation +
+      ` <button onclick="retryCheckpoint('${id}')" style="margin-left:8px;padding:3px 10px;font-size:0.75rem;border:1px solid #991b1b;border-radius:4px;background:transparent;color:#ff8899;cursor:pointer;">Try again</button>`;
+  }
+}
+
+function retryCheckpoint(id) {
+  const input = document.getElementById(`fill_${id}`);
+  input.classList.remove('wrong','correct');
+  input.value = '';
+  input.disabled = false;
+  document.getElementById(`fillbtn_${id}`).disabled = false;
+  const fb = document.getElementById(`fb_${id}`);
+  fb.className = 'quiz-feedback';
+  fb.innerHTML = '';
+  input.focus();
 }
 
 function renderInfoSection(s) {
