@@ -1,55 +1,33 @@
-# Ironwall
+# Ironwall — Interactive Edition
 
-An OOP auto-battler built with Python and pygame. Defend the Ironwall castle
-against three waves of rogues. The defenders hold the line and attack
-automatically; the rogues march in and batter the castle.
+## Requirements
+macOS · Python 3.10+ · pygame (`pip install pygame`)
 
-## How to run (macOS)
-
-1. Make sure you have Python 3.10 or newer:
-   ```
-   python3 --version
-   ```
-
-2. Install pygame (one time only):
-   ```
-   pip3 install pygame
-   ```
-   *(If you get stuck installing pygame, see the "Pygame Setup" tutorial on the
-   Learning OOP site.)*
-
-3. Open this `ironwall` folder in PyCharm (or a terminal), then run:
-   ```
-   python3 ironwall.py
-   ```
-
-A game window will open and the battle begins automatically.
+## Run
+```
+python ironwall.py
+```
 
 ## Controls
 
-- **Watch** the auto-battle play out across 3 waves.
-- **R** — play again after a win or loss.
-- Close the window to quit.
+### Setup phase
+| Input | Action |
+|-------|--------|
+| Click a button | select that defender type |
+| 1 / 2 / 3 keys | also selects defender type |
+| Click green zone | place selected defender |
+| Delete | remove last placed defender |
+| Return | start battle (need at least 1) |
 
-## What's inside
+### Battle phase
+| Input | Action |
+|-------|--------|
+| Space | fire catapult bolt (3 shots) |
+| R | restart after win/lose |
 
-```
-ironwall/
-├── ironwall.py     the complete game
-├── README.md       this file
-└── assets/         all the images (characters, castle, terrain)
-```
-
-## The OOP behind it
-
-Ironwall is built from the same ideas you learned in the tutorials:
-
-- **Inheritance** — every character descends from a shared `GameCharacter` class.
-- **Multi-level inheritance** — `GameCharacter` → `Defender`/`Enemy` → the six
-  specific characters (Warrior, Archer, Thief, Rogue Warrior, Rogue Archer,
-  Rogue King).
-- **Polymorphism** — every character has an `attack()` method, but each one
-  does something different. The game loop just calls `attack()` and the right
-  behaviour happens automatically.
-
-Open `ironwall.py` and read it — you'll recognise all of it.
+## Tips
+- Defenders attack enemies passing through their range
+- Enemies that survive reach the castle and attack it
+- Archer has the longest range — place them to cover the most ground
+- Warrior hits hardest — place them where enemies will be densest
+- You need at least 2–3 defenders to have a chance

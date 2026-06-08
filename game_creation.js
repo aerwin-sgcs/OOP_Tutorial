@@ -118,6 +118,7 @@ const TUTORIAL = {
           badge: "PAGE 2 — YOUR TURN",
           heading: "Build RogueWarrior and RogueKing",
           instruction: `<p>Follow the same pattern to build the other two rogues. Give them more health than the archer — the King is the boss, so it should be the toughest of all.</p>`,
+          peek: true,
           code: `class RogueWarrior(Enemy):
 
     def __init__(self):
@@ -239,7 +240,9 @@ VICTORY! The Ironwall holds. 🏰`,
           type: "build",
           badge: "PAGE 4 — YOUR TURN",
           heading: "Complete the two missing rogues",
-          instruction: `<p>In <code>ironwall_visual.py</code>, the <code>Enemy</code> parent and a finished <code>RogueArcher</code> are your worked examples. Complete <strong>RogueWarrior</strong> and <strong>RogueKing</strong> just below them by following the same pattern — each one passes its stats and its image filename up to the parent.</p>`,
+          instruction: `<p>In <code>ironwall_visual.py</code>, the <code>Enemy</code> parent and a finished <code>RogueArcher</code> are your worked examples. Complete <strong>RogueWarrior</strong> and <strong>RogueKing</strong> just below them by following the same pattern — each one passes its stats and its image filename up to the parent.</p>
+<p>Stats to use: <code>RogueWarrior</code> — speed 1.6, attack_cooldown 50, health 170, attack 11, sprite <code>"rogue_warrior.png"</code>. <code>RogueKing</code> — speed 1.1, attack_cooldown 45, health 430, attack 20, sprite <code>"rogue_king.png"</code>, size 92. Give it your best shot — use Take a peek if you get stuck.</p>`,
+          peek: true,
           code: `class RogueWarrior(Enemy):
     speed, attack_cooldown = 1.6, 50
     def __init__(self, x, y):
@@ -259,13 +262,38 @@ class RogueKing(Enemy):
           type: "build",
           badge: "PAGE 4 — STEP 2",
           heading: "Send the new rogues into battle",
-          instruction: `<p>Find the <code>self.waves</code> list in the <code>Game</code> class and mix your new rogues into the waves. Put the <code>RogueKing</code> in the final wave as the boss.</p>`,
+          instruction: `<p>Find the <code>self.waves</code> list in the <code>Game</code> class. It currently only has <code>RogueArcher</code> entries. Replace it with three waves that mix all your rogues together — <code>RogueKing</code> should only appear in the final wave as the boss. Decide how many of each type feels right and try it out. Use Take a peek once you have had a go.</p>`,
+          peek: true,
           code: `self.waves = [
     [RogueArcher, RogueWarrior, RogueArcher, RogueWarrior],
     [RogueWarrior, RogueArcher, RogueWarrior, RogueArcher, RogueWarrior, RogueArcher],
     [RogueWarrior, RogueArcher, RogueWarrior, RogueKing, RogueArcher, RogueWarrior, RogueArcher],
 ]`,
           note: `Run <code>python3 ironwall_visual.py</code>. A game window opens and the battle plays out with images — your rogues marching on the castle, your defenders firing back, health bars draining. You built that.`
+        },
+        {
+          type: "build",
+          badge: "FINAL STEP",
+          heading: "Two constants — make your game match the finished version",
+          instruction: `<p>Near the top of <code>ironwall_visual.py</code> you will find two constants that control where enemies stop and how tough the castle is. Update them to match the finished Ironwall game.</p>
+<p>Find these two lines and change them as shown:</p>`,
+          code: `# Change this line:
+CASTLE_X = WIDTH - 210
+
+# To this (moves the castle fully onto the screen):
+CASTLE_X = WIDTH - 200
+
+
+# Change this line:
+ENEMY_GOAL_X = DEFENDER_LINE_X
+
+# To this (enemies now march all the way to the castle wall):
+ENEMY_GOAL_X = CASTLE_X`,
+          explain: [
+            { line: "CASTLE_X = WIDTH - 200", explain: "Moves the castle sprite 10 pixels to the left so it sits fully within the screen instead of being slightly clipped on the right edge." },
+            { line: "ENEMY_GOAL_X = CASTLE_X", explain: "This is the most important change. ENEMY_GOAL_X is the x-position where an enemy stops marching and starts attacking. Setting it to CASTLE_X means enemies march all the way to the castle wall. The original value (DEFENDER_LINE_X) made enemies stop in the middle of the screen — they would stand there and never attack." }
+          ],
+          note: `Also find the <code>Castle</code> class and change <code>self.max_hp = self.hp = 450</code> to <code>self.max_hp = self.hp = 600</code>. With enemies now reaching the castle, a higher health total gives the battle the right amount of tension — a well-placed team of defenders wins, but only just.`
         },
         {
           heading: "🏰 You Built Ironwall",

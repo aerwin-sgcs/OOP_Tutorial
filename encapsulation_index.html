@@ -1023,6 +1023,48 @@
     color: var(--cyan);
     line-height: 1.65;
   }
+
+  /* ── OUTPUT CHECK ── */
+  .output-check {
+    background: #0a1525;
+    border: 1px solid var(--cyan-dim);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-top: 16px;
+  }
+
+  .output-check-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 2px;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+
+  .output-check-intro {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .output-input {
+    width: 100%;
+    background: #050f05;
+    border: 1px solid #39ff1466;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.84rem;
+    line-height: 1.7;
+    color: #a0f0a0;
+    outline: none;
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+
+  .output-input:focus { border-color: var(--green); }
+  .output-input.correct { border-color: var(--green); }
 </style>
 </head>
 <body>
@@ -1498,6 +1540,17 @@ function renderQuestion(q, num) {
 }
 
 function renderBrokenCode(bc) {
+  let checker = '';
+  if (bc.expectedOutput) {
+    const lineCount = bc.expectedOutput.replace(/\\n/g, '\n').split('\n').filter(l => l.trim()).length;
+    checker = `<div class="output-check">
+      <div class="output-check-label">▶ CHECK YOUR OUTPUT</div>
+      <p class="output-check-intro">Once your fixed code runs without errors, copy the ${lineCount} lines it printed in the PyCharm terminal and paste them below to confirm you fixed all four errors correctly.</p>
+      <textarea class="output-input" id="brokenOutput" rows="${lineCount + 1}" placeholder="Paste the program's output here..."></textarea>
+      <button class="fill-btn" id="brokenCheckBtn" onclick="checkBrokenOutput()" style="margin-top:10px;">CHECK MY OUTPUT</button>
+      <div class="quiz-feedback" id="brokenFb"></div>
+    </div>`;
+  }
   return `<div class="broken-card">
     <div class="broken-badge">🔴 BROKEN CODE CHALLENGE</div>
     <div class="broken-heading">${bc.heading}</div>
@@ -1505,8 +1558,49 @@ function renderBrokenCode(bc) {
     ${codeBlock(bc.code, true)}
     <button class="hint-toggle" onclick="toggleHint()">💡 SHOW HINT</button>
     <div class="hint-box" id="hintBox">${escHtml(bc.hint)}</div>
+    ${checker}
     <div class="lms-note">📋 Fix this code in PyCharm until it runs correctly, then copy your corrected code and submit it to your school LMS as evidence of completion.</div>
   </div>`;
+}
+
+// ── OUTPUT CHECK ──
+function normalizeOutput(text) {
+  return String(text)
+    .replace(/\\n/g, '\n')
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line.length > 0)
+    .join('\n')
+    .toLowerCase();
+}
+
+function checkBrokenOutput() {
+  const bc = TUTORIAL.pages[currentPage].quiz.brokenCode;
+  if (!bc || !bc.expectedOutput) return;
+  const input = document.getElementById('brokenOutput');
+  const fb = document.getElementById('brokenFb');
+  const expected = normalizeOutput(bc.expectedOutput);
+  const got = normalizeOutput(input.value);
+
+  if (!got) {
+    fb.className = 'quiz-feedback show wrong';
+    fb.textContent = '✗ Paste the output your fixed program printed before checking.';
+    return;
+  }
+
+  if (got === expected) {
+    fb.className = 'quiz-feedback show correct';
+    fb.textContent = '✓ Correct! Your output matches exactly — all four errors are fixed. Now submit your corrected code to the LMS.';
+    input.classList.add('correct');
+    input.disabled = true;
+    document.getElementById('brokenCheckBtn').disabled = true;
+  } else {
+    const expectedLines = bc.expectedOutput.replace(/\\n/g, '\n').split('\n').map(l => l.trim()).filter(Boolean);
+    fb.className = 'quiz-feedback show wrong';
+    fb.innerHTML = '✗ Not a match yet. When all four errors are fixed, the program should print exactly these ' + expectedLines.length + ' lines:<br>' +
+      '<span style="font-family:monospace; display:inline-block; margin-top:6px;">' + expectedLines.map(escHtml).join('<br>') + '</span><br><br>' +
+      'Check that you fixed all four errors — open the hint again if you need to.';
+  }
 }
 
 // ── QUIZ LOGIC ──
@@ -1659,4 +1753,4 @@ init();
 </body>
 </html>
 
-<!-- touched 2026-06-05 -->
+<!-- touched 2026-06-07 -->

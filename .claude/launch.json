@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "oaktree",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd '/Users/aerwin/Desktop/0 0 2026 CLAUDE ACCESS/Oaktree' && python3 -m http.server 8765"],
+      "port": 8765
+    }
+  ]
+}

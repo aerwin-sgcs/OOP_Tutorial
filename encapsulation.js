@@ -735,14 +735,14 @@ player1.set_injury_status("yes")`,
         ],
         brokenCode: {
           heading: "Broken Code Challenge",
-          instruction: `<p>The code below has <strong>four deliberate errors</strong>. Copy it into PyCharm, find all four errors, fix them, and run the file until it works correctly.</p>
-<p>When it runs without errors, copy your corrected code and submit it to the school LMS as evidence of completion.</p>`,
+          instruction: `<p>The code below has <strong>four deliberate errors</strong>. Copy it into PyCharm, find all four, fix them, and run the file until it works correctly.</p>
+<p>Three of the errors stop the program from running at all. The fourth lets it run but breaks the rules of encapsulation. Fix all four.</p>`,
           code: `class BasketballPlayer:
 
     def __init__(self, name, team, fitness):
         self.name = name
         self.team = team
-        self.__fitness = fitness
+        self._fitness = fitness
 
     def get_fitness(self)
         return self.__fitness
@@ -751,7 +751,7 @@ player1.set_injury_status("yes")`,
         if 0 <= value <= 100:
             self.__fitness = value
             print(f"Fitness updated to {value}.")
-        else:
+        else
             print("Invalid. Fitness must be 0 to 100.")
 
 
@@ -761,10 +761,13 @@ player1.set_fitness(95)
 player1.set_fitness(200)
 print(player1.__fitness)`,
           errors: [
-            "Line 9: missing colon at end of def get_fitness(self)",
-            "Line 22: print(player1.__fitness) — cannot access private attribute directly from outside the class. Use print(player1.get_fitness()) instead."
+            "Line 6: self._fitness = fitness uses ONE underscore, but the getter and setter both use self.__fitness (two underscores). The names must match — change it to self.__fitness so the whole class agrees the attribute is private.",
+            "Line 8: def get_fitness(self) is missing the colon at the end. Every method definition must end with a colon — change it to def get_fitness(self):",
+            "Line 15: the else is missing its colon. Every else needs a colon, just like if — change it to else:",
+            "Line 23: print(player1.__fitness) tries to read a private attribute directly from outside the class. That breaks encapsulation and raises an AttributeError. Use the getter instead: print(player1.get_fitness())"
           ],
-          hint: "Look carefully at: the end of the def get_fitness line, and how the final print statement is trying to access the fitness value."
+          expectedOutput: `88\nFitness updated to 95.\nInvalid. Fitness must be 0 to 100.\n95`,
+          hint: "There are two missing colons (one on a def line, one on an else line), one attribute whose underscores do not match between __init__ and the getter/setter, and one line that reaches past the class to read private data directly. Fix all four, then run the file and read the lines it prints."
         }
       }
     }
@@ -772,4 +775,4 @@ print(player1.__fitness)`,
   ]
 };
 
-// touched 2026-06-05
+// touched 2026-06-07
