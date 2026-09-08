@@ -3,444 +3,179 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Python OOP — Start Here</title>
+<title>OOP — Start Here (for total beginners)</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0e0e14;
-    --bg2: #14141e;
-    --border: #2a2a3e;
-    --text: #c8c8e0;
-    --dim: #6060808;
-    --white: #f0eff8;
-    --c1: #7c6cfa;   /* inherit — purple */
-    --c2: #2bb97a;   /* poly — green */
-    --c3: #f07c30;   /* encap — orange */
+  :root{
+    --bg:#0e0e14; --bg2:#14141e; --border:#2a2a3e;
+    --text:#c8c8e0; --white:#f0eff8; --dim:#8080a0;
+    --c1:#7c6cfa; --c2:#2bb97a; --c3:#f07c30;
   }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-weight:300; line-height:1.7;}
+  .wrap{max-width:640px; margin:0 auto; padding:64px 24px 100px;}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  .kicker{font-family:'JetBrains Mono',monospace; font-size:.68rem; color:var(--c1); letter-spacing:3px; margin-bottom:18px;}
+  h1{font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2.2rem,6vw,3.2rem); line-height:1.05; color:var(--white); letter-spacing:-1px; margin-bottom:18px;}
+  .lede{font-size:1.1rem; color:var(--text); margin-bottom:12px;}
+  .reassure{font-size:.95rem; color:var(--dim); margin-bottom:56px; border-left:2px solid var(--c2); padding-left:16px;}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    min-height: 100vh;
-  }
+  .step{margin-bottom:54px;}
+  .step-n{font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:2px; color:var(--c1); margin-bottom:10px;}
+  h2{font-family:'Syne',sans-serif; font-weight:700; font-size:1.5rem; color:var(--white); margin-bottom:16px; line-height:1.2;}
+  p{margin-bottom:16px;}
+  .big-idea{font-size:1.05rem; color:var(--white);}
+  strong{color:var(--white); font-weight:500;}
+  .analogy{background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:20px 22px; margin:20px 0;}
+  .analogy .tag{font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:2px; color:var(--c3); display:block; margin-bottom:8px;}
+  code{font-family:'JetBrains Mono',monospace; font-size:.85em; background:#1e1e2e; border:1px solid var(--border); border-radius:4px; padding:1px 6px; color:#d8d8ee;}
+  pre{font-family:'JetBrains Mono',monospace; font-size:.82rem; line-height:1.7; background:#0b0b12; border:1px solid var(--border); border-radius:10px; padding:18px 20px; margin:16px 0; overflow-x:auto; color:#d8d8ee; white-space:pre;}
+  pre .k{color:#7c6cfa;} pre .cls{color:#f0c030;} pre .fn{color:#2bb97a;} pre .str{color:#e0a060;} pre .cmt{color:#606078; font-style:italic;}
+  .plain{font-size:.9rem; color:var(--dim); margin-top:-4px;}
 
-  /* ---- HERO ---- */
-  .hero {
-    padding: 80px 40px 64px;
-    max-width: 860px;
-    margin: 0 auto;
-  }
+  .three{display:grid; gap:12px; margin-top:8px;}
+  .pill{background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:16px 18px;}
+  .pill b{font-family:'Syne',sans-serif; color:var(--white); font-size:1rem;}
+  .pill.c1 b{color:var(--c1);} .pill.c2 b{color:var(--c2);} .pill.c3 b{color:var(--c3);}
+  .pill span{display:block; font-size:.9rem; color:var(--text); margin-top:4px;}
 
-  .hero-kicker {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--c1);
-    letter-spacing: 3px;
-    margin-bottom: 24px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .hero-kicker::before {
-    content: '';
-    display: block;
-    width: 28px;
-    height: 1px;
-    background: var(--c1);
-  }
-
-  .hero-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: clamp(2.8rem, 7vw, 5rem);
-    line-height: 1.0;
-    color: var(--white);
-    margin-bottom: 24px;
-    letter-spacing: -1px;
-  }
-
-  .hero-title .oop {
-    color: transparent;
-    -webkit-text-stroke: 1.5px var(--white);
-  }
-
-  .hero-body {
-    font-size: 1.05rem;
-    line-height: 1.75;
-    color: var(--text);
-    max-width: 540px;
-    margin-bottom: 40px;
-  }
-
-  .hero-steps {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .step-pill {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 1px;
-    padding: 7px 14px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    color: #9090b0;
-  }
-
-  /* ---- CARDS ---- */
-  .cards-wrap {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 0 40px 80px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
-  }
-
-  .card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    text-decoration: none;
-    display: block;
-    transition: transform 0.2s, border-color 0.2s;
-    position: relative;
-  }
-
-  .card:hover { transform: translateY(-4px); }
-  .card[data-c="1"]:hover { border-color: var(--c1); }
-  .card[data-c="2"]:hover { border-color: var(--c2); }
-  .card[data-c="3"]:hover { border-color: var(--c3); }
-
-  .card-top {
-    height: 5px;
-  }
-
-  .card[data-c="1"] .card-top { background: var(--c1); }
-  .card[data-c="2"] .card-top { background: var(--c2); }
-  .card[data-c="3"] .card-top { background: var(--c3); }
-
-  .card-inner {
-    padding: 26px 26px 28px;
-  }
-
-  .card-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 2px;
-    margin-bottom: 14px;
-  }
-
-  .card[data-c="1"] .card-num { color: var(--c1); }
-  .card[data-c="2"] .card-num { color: var(--c2); }
-  .card[data-c="3"] .card-num { color: var(--c3); }
-
-  .card-concept {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: var(--white);
-    margin-bottom: 6px;
-    line-height: 1.1;
-  }
-
-  .card-theme {
-    font-size: 0.82rem;
-    color: #6060808;
-    color: #70708a;
-    margin-bottom: 20px;
-    font-style: italic;
-  }
-
-  .card-what {
-    font-size: 0.88rem;
-    line-height: 1.65;
-    color: var(--text);
-    margin-bottom: 22px;
-  }
-
-  .card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 24px;
-  }
-
-  .tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    padding: 3px 9px;
-    border-radius: 4px;
-    background: #1e1e2e;
-    border: 1px solid var(--border);
-    color: #9090aa;
-  }
-
-  .card-cta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 0.82rem;
-    letter-spacing: 0.5px;
-  }
-
-  .card[data-c="1"] .card-cta { color: var(--c1); }
-  .card[data-c="2"] .card-cta { color: var(--c2); }
-  .card[data-c="3"] .card-cta { color: var(--c3); }
-
-  .cta-arrow {
-    width: 22px;
-    height: 1px;
-    position: relative;
-    background: currentColor;
-    transition: width 0.2s;
-  }
-
-  .cta-arrow::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: -3px;
-    border: 4px solid transparent;
-    border-left-color: currentColor;
-  }
-
-  .card:hover .cta-arrow { width: 32px; }
-
-  /* ---- HOW IT WORKS ---- */
-  .how {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 0 40px 80px;
-  }
-
-  .how-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--white);
-    margin-bottom: 24px;
-  }
-
-  .how-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .how-item {
-    background: var(--bg2);
-    padding: 20px 22px;
-  }
-
-  .how-n {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.4rem;
-    font-weight: 500;
-    color: var(--border);
-    margin-bottom: 8px;
-  }
-
-  .how-label {
-    font-size: 0.88rem;
-    color: var(--white);
-    font-weight: 500;
-    margin-bottom: 4px;
-  }
-
-  .how-desc {
-    font-size: 0.8rem;
-    color: #70708a;
-    line-height: 1.55;
-  }
-
-  /* ---- REFERENCE LINK ---- */
-  .ref-bar {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 0 40px 80px;
-  }
-
-  .ref-link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 20px 26px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    text-decoration: none;
-    transition: border-color 0.2s;
-  }
-
-  .ref-link:hover { border-color: #5050708; border-color: #505078; }
-
-  .ref-left { display: flex; align-items: center; gap: 16px; }
-
-  .ref-icon {
-    font-size: 1.4rem;
-    flex-shrink: 0;
-  }
-
-  .ref-text-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    color: var(--white);
-    font-size: 0.95rem;
-    margin-bottom: 2px;
-  }
-
-  .ref-text-desc {
-    font-size: 0.8rem;
-    color: #70708a;
-  }
-
-  .ref-arrow {
-    font-size: 1.2rem;
-    color: #505078;
-    flex-shrink: 0;
-  }
-
-  /* ---- RESPONSIVE ---- */
-  @media (max-width: 560px) {
-    .hero { padding: 52px 24px 40px; }
-    .cards-wrap { padding: 0 24px 60px; }
-    .how { padding: 0 24px 60px; }
-    .ref-bar { padding: 0 24px 60px; }
-    .hero-title { font-size: 2.4rem; }
-  }
+  .check{background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:26px 24px;}
+  .check h2{font-size:1.15rem;}
+  .opts{display:grid; gap:10px; margin-top:8px;}
+  .opt{text-align:left; font-family:'DM Sans',sans-serif; font-weight:300; font-size:.95rem; color:var(--text); background:#0b0b12; border:1.5px solid var(--border); border-radius:10px; padding:14px 16px; cursor:pointer; transition:.15s;}
+  .opt b{color:var(--white); font-weight:500;}
+  .opt:hover{border-color:var(--c1);}
+  .opt.right{border-color:var(--c2); background:rgba(43,185,122,.1);}
+  .opt.wrong{border-color:var(--c3); background:rgba(240,124,48,.08);}
+  .opt:disabled{cursor:default;}
+  .result{margin-top:16px; font-size:.95rem; line-height:1.6; min-height:1em; display:none;}
+  .result.show{display:block;}
+  .result.ok{color:var(--c2);} .result.try{color:var(--c3);}
+  .next{margin-top:64px; border-top:1px solid var(--border); padding-top:36px;}
+  .next h2{margin-bottom:8px;}
+  .next p{color:var(--dim); font-size:.95rem; margin-bottom:24px;}
+  .go{display:flex; align-items:center; justify-content:space-between; gap:16px; background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:20px 24px; text-decoration:none; transition:.2s; margin-bottom:12px;}
+  .go:hover{border-color:var(--c1); transform:translateY(-3px);}
+  .go .t{font-family:'Syne',sans-serif; font-weight:700; color:var(--white); font-size:1rem;}
+  .go .d{font-size:.82rem; color:var(--dim); margin-top:2px;}
+  .go .arrow{color:var(--c1); font-size:1.3rem;}
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<div class="hero">
-  <div class="hero-kicker">Python · Object-Oriented Programming</div>
-  <h1 class="hero-title">Learn <span class="oop">OOP</span><br>one concept<br>at a time.</h1>
-  <p class="hero-body">Three interactive tutorials. Each one teaches a single OOP concept using a theme you actually care about. Work through them in any order — each one stands completely on its own.</p>
-  <div class="hero-steps">
-    <div class="step-pill">Read the concepts</div>
-    <div class="step-pill">Answer the checkpoints</div>
-    <div class="step-pill">Try the interactive exercises</div>
-    <div class="step-pill">Download the Python file</div>
-    <div class="step-pill">Attempt the challenges</div>
+  <div class="kicker">NEVER CODED BEFORE? START RIGHT HERE.</div>
+  <h1>What on earth is "object-oriented programming"?</h1>
+  <p class="lede">Let's find out with zero code and zero jargon. Just read — it takes about 3 minutes.</p>
+  <p class="reassure">You don't need to remember anything on this page. You don't need Python installed. Nothing here can go wrong. Just scroll.</p>
+
+  <!-- 1 -->
+  <div class="step">
+    <div class="step-n">IDEA 1 OF 4</div>
+    <h2>It's just a way of organising code around <em>things</em>.</h2>
+    <p class="big-idea">Older code was a long list of <strong>instructions</strong> — do this, then this, then this. Object-oriented programming (OOP) organises code around <strong>things</strong> instead: a player, a car, a bank account, a dog.</p>
+    <p>Each "thing" keeps its own information <em>and</em> the actions it can do, all in one tidy bundle. That's the whole idea. Everything else is just detail.</p>
   </div>
-</div>
 
-<div class="cards-wrap">
-
-  <a class="card" data-c="1" href="inheritance_index.html">
-    <div class="card-top"></div>
-    <div class="card-inner">
-      <div class="card-num">TUTORIAL 01</div>
-      <div class="card-concept">Inheritance</div>
-      <div class="card-theme">⚔️ Fantasy game characters</div>
-      <div class="card-what">How classes can pass on their attributes and methods to child classes — so you write code once and reuse it everywhere.</div>
-      <div class="card-tags">
-        <span class="tag">parent class</span>
-        <span class="tag">child class</span>
-        <span class="tag">super()</span>
-        <span class="tag">override</span>
-        <span class="tag">DRY principle</span>
-      </div>
-      <div class="card-cta">
-        Open tutorial <div class="cta-arrow"></div>
-      </div>
+  <!-- 2 -->
+  <div class="step">
+    <div class="step-n">IDEA 2 OF 4</div>
+    <h2>A <em>class</em> is a blueprint. An <em>object</em> is the real thing built from it.</h2>
+    <div class="analogy">
+      <span class="tag">THINK OF A COOKIE CUTTER</span>
+      The <strong>cookie cutter</strong> is the class — one shape, made once.
+      Every <strong>cookie</strong> you press out is an object — real, and you can make as many as you like.
+      Same shape, but each cookie is its own thing.
     </div>
-  </a>
-
-  <a class="card" data-c="2" href="polymorphism_index.html">
-    <div class="card-top"></div>
-    <div class="card-inner">
-      <div class="card-num">TUTORIAL 02</div>
-      <div class="card-concept">Polymorphism</div>
-      <div class="card-theme">🎵 Musical instruments</div>
-      <div class="card-what">How different classes can share the same method name but each do something completely different when that method is called.</div>
-      <div class="card-tags">
-        <span class="tag">same name</span>
-        <span class="tag">different behaviour</span>
-        <span class="tag">override</span>
-        <span class="tag">play()</span>
-      </div>
-      <div class="card-cta">
-        Open tutorial <div class="cta-arrow"></div>
-      </div>
-    </div>
-  </a>
-
-  <a class="card" data-c="3" href="encapsulation_index.html">
-    <div class="card-top"></div>
-    <div class="card-inner">
-      <div class="card-num">TUTORIAL 03</div>
-      <div class="card-concept">Encapsulation</div>
-      <div class="card-theme">🏀 Basketball — Australian NBL</div>
-      <div class="card-what">How classes control access to their data — deciding what is public, what is protected, and what is completely private.</div>
-      <div class="card-tags">
-        <span class="tag">public</span>
-        <span class="tag">protected _</span>
-        <span class="tag">private __</span>
-        <span class="tag">getter</span>
-        <span class="tag">setter</span>
-      </div>
-      <div class="card-cta">
-        Open tutorial <div class="cta-arrow"></div>
-      </div>
-    </div>
-  </a>
-
-</div>
-
-<div class="how">
-  <div class="how-title">How each tutorial works</div>
-  <div class="how-grid">
-    <div class="how-item">
-      <div class="how-n">01</div>
-      <div class="how-label">Read the concept</div>
-      <div class="how-desc">Plain English explanation with real-world analogies before any code appears.</div>
-    </div>
-    <div class="how-item">
-      <div class="how-n">02</div>
-      <div class="how-label">Pass the checkpoint</div>
-      <div class="how-desc">Answer a question to unlock the next page. Retry as many times as you need.</div>
-    </div>
-    <div class="how-item">
-      <div class="how-n">03</div>
-      <div class="how-label">Try the exercises</div>
-      <div class="how-desc">Predict what code will print. Fill in a missing line. Get instant feedback.</div>
-    </div>
-    <div class="how-item">
-      <div class="how-n">04</div>
-      <div class="how-label">Download and run</div>
-      <div class="how-desc">Get the complete Python file, open it in PyCharm, and try the extension challenges.</div>
-    </div>
+    <p>Blueprint for a house → the actual houses built from it. One <strong>class</strong>, many <strong>objects</strong>. That's the vocabulary that trips people up, and now you've got it.</p>
   </div>
-</div>
 
-<div class="ref-bar">
-  <a class="ref-link" href="OOP_tutorial.html">
-    <div class="ref-left">
-      <div class="ref-icon">📋</div>
+  <!-- 3 -->
+  <div class="step">
+    <div class="step-n">IDEA 3 OF 4</div>
+    <h2>Here's what it looks like — don't worry, just glance.</h2>
+    <p>A blueprint for a dog. Read it like a sentence, you don't have to type it:</p>
+<pre><span class="k">class</span> <span class="cls">Dog</span>:              <span class="cmt"># the blueprint</span>
+    <span class="k">def</span> <span class="fn">__init__</span>(self, name):
+        self.name = name    <span class="cmt"># each dog remembers its name</span>
+
+    <span class="k">def</span> <span class="fn">bark</span>(self):        <span class="cmt"># something a dog can DO</span>
+        print(self.name + <span class="str">" says woof!"</span>)</pre>
+    <p class="plain">↑ A dog knows its <em>name</em> (information) and can <em>bark</em> (an action). Bundled together.</p>
+    <p>Now make some real dogs from the blueprint:</p>
+<pre>rex = <span class="cls">Dog</span>(<span class="str">"Rex"</span>)     <span class="cmt"># an object</span>
+bella = <span class="cls">Dog</span>(<span class="str">"Bella"</span>)  <span class="cmt"># another object</span>
+rex.bark()             <span class="cmt"># Rex says woof!</span>
+bella.bark()           <span class="cmt"># Bella says woof!</span></pre>
+    <p class="plain">One blueprint, two real dogs, each with its own name. That's OOP. You just read it.</p>
+  </div>
+
+  <!-- 4 -->
+  <div class="step">
+    <div class="step-n">IDEA 4 OF 4</div>
+    <h2>The "big three" words, in one line each.</h2>
+    <p>Every OOP course throws these at you. Here they are with the scary taken out:</p>
+    <div class="three">
+      <div class="pill c3"><b>Encapsulation</b><span>Keep a thing's private stuff private. Like a car — you use the pedals, you don't touch the engine.</span></div>
+      <div class="pill c1"><b>Inheritance</b><span>A new blueprint can borrow from an old one. A <em>Puppy</em> is a <em>Dog</em> — no need to re-explain barking.</span></div>
+      <div class="pill c2"><b>Polymorphism</b><span>Same command, different result. Say "make a sound" — a dog barks, a cat meows.</span></div>
+    </div>
+    <p style="margin-top:20px;">That's it. You now understand what the whole course is about, before writing a single line.</p>
+  </div>
+
+  <!-- self-check -->
+  <div class="step check">
+    <div class="step-n">QUICK SELF-CHECK · JUST FOR YOU</div>
+    <h2>You write one <code>Dog</code> blueprint, then make Rex and Bella from it.</h2>
+    <p>In OOP words, what are <strong>Rex</strong> and <strong>Bella</strong>? (No score, no repercussions — just to see if it landed.)</p>
+    <div class="opts">
+      <button class="opt" data-correct="0">They are two <b>classes</b></button>
+      <button class="opt" data-correct="1">They are two <b>objects</b></button>
+      <button class="opt" data-correct="0">They are two <b>blueprints</b></button>
+    </div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <!-- next -->
+  <div class="next">
+    <h2>Ready to actually try it?</h2>
+    <p>Take the full course when you feel like it — it builds up slowly, one small step at a time.</p>
+
+    <a class="go" href="OOP_tutorial.html">
       <div>
-        <div class="ref-text-title">OOP Reference Sheet</div>
-        <div class="ref-text-desc">All three concepts, key terms, and syntax on one page</div>
+        <div class="t">🎓 Start the step-by-step course</div>
+        <div class="d">"What is OOP?" → classes → objects → the big three. Recommended first stop.</div>
       </div>
-    </div>
-    <div class="ref-arrow">→</div>
-  </a>
+      <div class="arrow">→</div>
+    </a>
+
+    <a class="go" href="index.html">
+      <div>
+        <div class="t">🗺️ See everything on offer</div>
+        <div class="d">All tutorials, the game-building challenge, and the Ironwall game.</div>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+  </div>
+
 </div>
 
+<script>
+  const result = document.getElementById('result');
+  document.querySelectorAll('.opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const correct = btn.dataset.correct === '1';
+      document.querySelectorAll('.opt').forEach(b => {
+        b.disabled = true;
+        if (b.dataset.correct === '1') b.classList.add('right');
+      });
+      if (!correct) btn.classList.add('wrong');
+      result.className = 'result show ' + (correct ? 'ok' : 'try');
+      result.innerHTML = correct
+        ? "✓ Exactly right. Rex and Bella are <strong>objects</strong> — two real things made from the one <em>Dog</em> class (the blueprint). You've got the core idea."
+        : "Not quite — but no problem, that's the whole point of checking. Rex and Bella are <strong>objects</strong>: real things built from the one <em>Dog</em> <em>class</em> (the blueprint). Re-read Idea 2 and it'll click.";
+    });
+  });
+</script>
 </body>
 </html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ironwall — OOP Escape Room</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e0e14; --bg2:#14141e; --border:#2a2a3e;
+    --text:#c8c8e0; --white:#f0eff8; --dim:#70708a;
+    --accent:#7c6cfa; --ok:#2bb97a; --bad:#f0506e;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:'DM Sans',sans-serif; font-weight:300;
+    min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    padding:40px 20px 80px;
+  }
+  .kicker{
+    font-family:'JetBrains Mono',monospace; font-size:.7rem;
+    color:var(--accent); letter-spacing:3px; margin-bottom:18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .kicker::before{content:'';width:28px;height:1px;background:var(--accent);}
+  h1{
+    font-family:'Syne',sans-serif; font-weight:800;
+    font-size:clamp(2.2rem,6vw,3.4rem); line-height:1; color:var(--white);
+    letter-spacing:-1px; margin-bottom:10px; text-align:center;
+  }
+  h1 .stroke{color:transparent;-webkit-text-stroke:1.5px var(--white);}
+  .sub{color:var(--dim); font-size:.95rem; margin-bottom:34px; text-align:center; max-width:520px;}
+
+  /* progress locks */
+  .locks{display:flex; gap:12px; margin-bottom:30px;}
+  .lock{
+    width:44px; height:44px; border-radius:10px; border:1px solid var(--border);
+    background:var(--bg2); display:flex; align-items:center; justify-content:center;
+    font-size:1.1rem; color:var(--dim); transition:.3s; position:relative;
+  }
+  .lock.current{border-color:var(--accent); color:var(--white); box-shadow:0 0 0 3px rgba(124,108,250,.12);}
+  .lock.done{border-color:var(--ok); color:var(--ok);}
+  .lock .n{position:absolute; top:-8px; right:-6px; font-family:'JetBrains Mono',monospace;
+    font-size:.55rem; background:var(--bg); border:1px solid var(--border); border-radius:4px; padding:1px 4px; color:var(--dim);}
+
+  .panel{
+    width:100%; max-width:640px; background:var(--bg2);
+    border:1px solid var(--border); border-radius:14px; overflow:hidden;
+  }
+  .panel-top{height:5px; background:var(--accent);}
+  .panel-inner{padding:30px 30px 34px;}
+  .seal{
+    font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:2px;
+    color:var(--accent); margin-bottom:20px;
+  }
+  .story{font-size:.98rem; line-height:1.7; margin-bottom:20px; color:var(--text);}
+  .code{
+    font-family:'JetBrains Mono',monospace; font-size:.82rem; line-height:1.7;
+    background:#0b0b12; border:1px solid var(--border); border-radius:9px;
+    padding:16px 18px; margin-bottom:20px; overflow-x:auto; color:#d8d8ee; white-space:pre;
+  }
+  .code .k{color:#7c6cfa;} .code .cls{color:#f0c030;} .code .fn{color:#2bb97a;}
+  .code .num{color:#f07c30;} .code .str{color:#e0a060;} .code .cmt{color:#606078; font-style:italic;}
+  .q{font-size:1rem; line-height:1.65; color:var(--white); margin-bottom:22px;}
+  code{font-family:'JetBrains Mono',monospace; font-size:.85em; background:#1e1e2e;
+    border:1px solid var(--border); border-radius:4px; padding:1px 5px; color:#c8c8e0;}
+
+  .answer-row{display:flex; gap:10px; margin-bottom:14px;}
+  input[type=text]{
+    flex:1; background:#0b0b12; border:1.5px solid var(--border); border-radius:9px;
+    padding:13px 16px; color:var(--white); font-family:'JetBrains Mono',monospace;
+    font-size:.95rem; letter-spacing:1px; outline:none; transition:.2s;
+  }
+  input[type=text]:focus{border-color:var(--accent);}
+  input.shake{animation:shake .4s; border-color:var(--bad);}
+  @keyframes shake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-7px);}40%,80%{transform:translateX(7px);}}
+  button{
+    font-family:'Syne',sans-serif; font-weight:700; font-size:.9rem;
+    background:var(--accent); color:#0b0b12; border:none; border-radius:9px;
+    padding:0 22px; cursor:pointer; transition:.2s; letter-spacing:.5px;
+  }
+  button:hover{filter:brightness(1.1);}
+  .hint-btn{
+    background:transparent; border:1px solid var(--border); color:var(--dim);
+    font-weight:400; font-family:'DM Sans',sans-serif; padding:8px 14px; font-size:.8rem;
+  }
+  .hint-btn:hover{border-color:var(--dim); color:var(--text);}
+  .feedback{margin-top:14px; font-size:.86rem; min-height:1.2em; line-height:1.5;}
+  .feedback.bad{color:var(--bad);}
+  .feedback.ok{color:var(--ok);}
+  .hint-box{
+    margin-top:14px; font-size:.86rem; line-height:1.6; color:#b0a060;
+    background:rgba(240,192,48,.06); border:1px solid rgba(240,192,48,.22);
+    border-radius:8px; padding:12px 14px; display:none;
+  }
+  .reset-btn{
+    margin-top:22px; background:transparent; border:1px solid var(--border);
+    color:var(--dim); font-family:'DM Sans',sans-serif; font-weight:400;
+    font-size:.8rem; padding:9px 18px; border-radius:999px; letter-spacing:.5px;
+  }
+  .reset-btn:hover{border-color:var(--dim); color:var(--text);}
+  .footnote{margin-top:20px; font-size:.72rem; color:var(--dim); text-align:center; max-width:520px; line-height:1.6;}
+
+  /* win */
+  .win{text-align:center; padding:8px 4px;}
+  .win .big{font-family:'Syne',sans-serif; font-weight:800; font-size:2rem; color:var(--ok); margin-bottom:8px;}
+  .win p{line-height:1.7; margin-bottom:18px;}
+  .cert{
+    font-family:'JetBrains Mono',monospace; font-size:1.15rem; letter-spacing:2px; color:var(--white);
+    background:#0b0b12; border:1px dashed var(--ok); border-radius:10px; padding:18px; margin:8px 0 6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="kicker">Python · OOP · Locked Vault</div>
+<h1>The <span class="stroke">Ironwall</span> Escape Room</h1>
+<p class="sub">Four seals guard the vault. Each opens only with the right OOP answer — and each answer unlocks the next room. No skipping. No peeking ahead.</p>
+
+<div class="locks" id="locks"></div>
+
+<div class="panel">
+  <div class="panel-top" id="panelTop"></div>
+  <div class="panel-inner">
+    <div class="seal" id="seal"></div>
+    <div id="body"></div>
+    <div id="answerArea">
+      <div class="answer-row">
+        <input type="text" id="answer" placeholder="type your answer…" autocomplete="off" spellcheck="false">
+        <button id="submit">Unlock →</button>
+      </div>
+      <button class="hint-btn" id="hintBtn">Need a hint?</button>
+      <div class="feedback" id="feedback"></div>
+      <div class="hint-box" id="hintBox"></div>
+    </div>
+  </div>
+</div>
+
+<button class="reset-btn" id="resetBtn">↺ Start over</button>
+
+<p class="footnote">Made for the OOP tutorial · Rooms are encrypted with each answer, so later seals stay unreadable until you earn them.</p>
+
+<script type="application/json" id="payloads">[{"enc": false, "data": "{\"seal\": \"SEAL 1 \\u00b7 ENCAPSULATION\", \"color\": \"#f07c30\", \"body\": \"\\n<p class=\\\"story\\\">The Ironwall vault has four seals. The first guards the treasury ledger \\u2014 and the Keeper has hidden the balance so no rogue can touch it.</p>\\n<pre class=\\\"code\\\"><span class=\\\"k\\\">class</span> <span class=\\\"cls\\\">Treasury</span>:\\n    <span class=\\\"k\\\">def</span> <span class=\\\"fn\\\">__init__</span>(self):\\n        self.__gold = <span class=\\\"num\\\">9000</span>   <span class=\\\"cmt\\\"># two underscores!</span>\\n\\nvault = Treasury()\\nvault.__gold = <span class=\\\"num\\\">0</span>          <span class=\\\"cmt\\\"># a rogue tries to empty it...</span>\\nprint(vault.get_gold())    <span class=\\\"cmt\\\"># still prints 9000. Untouched.</span></pre>\\n<p class=\\\"q\\\">The <code>__gold</code> attribute cannot be changed from outside the class.\\nWhat <strong>access level</strong> does the double underscore give an attribute?</p>\\n\", \"hint\": \"Two underscores before a name make it fully hidden. What access level is that? One word.\", \"hash\": \"56aa9db9d69cf49d2beadf6c4c306b55f1c863b7fb9af1828e92221cfea9d34b\"}"}, {"enc": true, "data": "AQaz6bwD8kgGkyEYs8dTsMa8S3vsqGxa5SoOa65vQVxhjgOrPl9aKxEfoPLaIvfxjnglgVZdFNbQEJ1bxhiPpiZRAMEsYP2zGTcFke/SITveYa/X1SGDZYAn8hn0GTtW4KdsENkDZC+E+6bQcK8azrdyEhTInDhaX8OYEkXlnwAwGSCB36g/kUhcr1Wju6YEZ+6N3lRgWy70EkU/jBQAUdUCZghuQcb7d0iPZ/jZuRv8LkDSUUlZCpI0jxT9dF5OPVXvldNyrkNzve5SBp6x2Hgb7DMplB5obVt9owIH2/piC99pYAk6qEgecZfIp5cS5+2RgBHc4eqty1yEBiIYsFGfysHSQkS93sTC7MUT7pUjbZzP0/YOIwQ3rF/DW1Zqq+9xq2KlubCqBzNq3W9TCphAGk+vWZ9b6iyXVVHH19CvW1+9MZ86evIUsoktJBwV/Unxqfpg9E3RD86Ha4Z+7ieStNsjKZLdWg8Bbd2L6SjGi8DEzwt+ptIt6cdFp3fnEQhktU7K6vm/yHkwQu7YIIEouvsKGM6pZnUI/J8opIkBwV/wQNFiM5npteJJyGqPirW99HnIFcQvkU6XxZLXoUlOSCAPsx1QnnQVaN5HgrffCLUZJgvrCEl8DyBQqw9HFdvscy4oeaAWTJVusA5XFsN89n2vBl1LMUrtyReV3YnMXZN3HYlG1hQLXQyg8kAfi6H9kJssUsqUm7RNKdYer5xcUiVVIr9WNLiGuyZ5EaShTqo0OxhhQ0S4Ln1E5npLTV5CvE5OUqZN0I6B8FbU1fmbgBA2EYxRDJwCC+5jrmDwF2SXqJqm+MBvs9ooI0wOGCcaZcg3BeteTAMXTrXw7WQa69rbkAxsOqXCnB9lMb05kS2BF4VR/caVqd42s6qOYT7b+qyJm+YT45HJWCvXMobwsjXAq99cb5TkN9vqJQLxopCQjFM4ESaxvPBl3JyO6ln5+QVt42IZqfF3Awg4qxhm1Dz0w+ZeDjwcThcj+uJKP/ocX+jzO5YIn7a+VBRnr8SZs4zcujhZMDQn7NLm84ASoSKodvhd8kzruPsin2QAaQV7zOjcjPjodmcp+jI6lIS/E9z5b9GrmD07dUQu+VUPuPHO6vB0mWmsloYu5HKwfZY1+WghPXXq+Pg+wZoIb32F92/xzNcbvctDu7Fc7zLn0rzd30kdvO2OHR/I9PnQoYtBl5732GT3Wl2l5OKtbeWU3LsLnyPpWMjlM7+z1+RJ7lOiLK/caiHr+xVxe2jKshPAnkAQi/Rz8zCDmNQu"}, {"enc": true, "data": "G5wrv5UOocyRO5i/Q54mczF0cquem2MncJBQGHXcrp4tnVBRjwfgMtLncTff5xwieMXE6lLutqAXGNQVx3Bi4fuaFhORt+b/pNT6C+em2Aqqpew8jLqBogamndBhzaCo81on0TUsSrMVt5EYV1XZz15Rv+1b+dWCr7cCdGsDDnL9gfYXieyv0Y1UNZ1poV6lkRnSsiY96LRHLhwC3MMAXJnPC9S6/trL5To+PN9MtnvXbUIU7YxD0yzqOJ7RwYvApSqoLgAQAV5WsR/MPxxenNTecxyP+1xd3d2qG2+3OI4RT29D/pLnQzmxvcjbpW5afOUri0XYBczOi/DmNkPOKhN8OmaUC0mzzlid9H8PoFII+t4Di31tAZfC29TpWd9QYyHLsyMYRChuNcoEGZC9PktmuwDEGF9ks5+yAFgzBVyhUdtuNahL866YL8W20fkikoh9DqqxwwCqa1utkCRNyAL3moqDa9BWKrDW+B/8nPfPHwLoLMT6SpKzhXlQNfWdaeTxix2a8x7/dRrfbnXeacIW8C91KAsx/TrBx3F8t0f19NLr7WhI04o8z5ZZCQ/nvWFywTNLlZ9v77B3aYU8xF4idDBSxJ6NOuTgOqcEJBxoZOjej0BSwrFg1AYQzafyrWCshxGKe4XfhKHRuzCdnKOInqUXKw5ccxblt8Q3aJUd7fgH0Cq8jwQkUSr1vFz2vXARUrrQMUJ6MIbE8e70bVeVvEdY3q/s1gynaZv4ko9UM3PGFtRAi35+Y1OyuPKTIcognea89BwjWjVbs3YvXBoLvtwG8njzrnIH2PH4qHk8WEp4nNFmp6gmS2ktVpDWqYWhoGNjKaMrgqO+TCWbirgF14acDbIl2qbxNmbg7tXfIL7ugVoJ8W99eRAfeOUfdC17gC+fQNpuFfdzcpXokOhg8lXUvdqWsZKvk/V9gSQFNXBRdJ82DS4UTCv0CV01lof8P62GpLvMCyg0mu1CWjCasnDT8A9Jbj03wqYJHZ6zYWwR3Wz13hwpHT6TAKTuO5OIE/BS9MdyhyixnwXw6R8uaixMv2LMuI3zo5zjyp0E6drFTpWnpZJaBINPg4QA0jzpAFp88Oqyi1pQPQDnABTN3JZsC2mY9x3jPIs+uzjtcu0TI31Q8x3XQuLaohv3kjOVS4NpLMyvIQ81EH6JqtFjXG8g3nZWi8C8+UC3zvkXemd0UXK21o//QaCdqW3qDH3jKeVJ0uhwhHly/+IliUP0OoiEUxOscDX8MN5Hwa2Nzg4jQRjHhobjqM/PQqdtDk4+yDaAIPYMyVbmGGy+XQ3KZFVBsuLKWzeQTeuvMdlFOot4TwWNbSSusxuIYX5g+/ao3LHwVxhbimjM2mehFd35JpBpFs7Fxx9J+LGDDcYUHrOoOb1PzSDs+13NKBGYz443zeMnRxbUDheAnZM="}, {"enc": true, "data": "5V8VCGu3yORoNTjgAYA+5GVDUEpU0FwLH5VvgNkSFf+JT3AwQc0hnWSxHbYY7opDgAKu5hhzeHeKpc/8PwTJGSaZxSnZEl/neJxjXSQJs8VLVCKO/wEbIrE31pnK3MhC4cHj5achVh50+1YpCShWGwL99M6Z3I00SRyvA6kEMdI1tW5w8DiZiS0k9Fxs+38VdG8Pcv4dS1F22r+FbQuGY+0ipdf0K/xLEA++tkGnI5gMnQfbkMCR3ZRlzAte2QW+J0oDtxbfZVa0kdZuWVtl5m7/bt0qKi2v+Vn32HSrQc2R7sfCLUT3ibembR3AltKUGjsg4qWyEDUCa5F9FAK9ohofXkgqxqReeT6ycMWE/kKuxYVB9ifix39zLaFvHVdIRyB6i1AzWALEiQsQF90n1u4vvYp4WH+eI7PMcU/5Bo6ANd6DVJik2dhw1F18jXY/oPzt2U1G2glJdOY+QThWKiDix0evFXDHB2kSebQ58w05WCnmpLRTxKeRVNSNnr7h1m6H4BgQNKBxZc0fs++5Kn5fCIDicys/46m/UxS2DPFF04TYaKTTOCifGPRpZuQQ7pjVP06/2e731SFRZX0rn2q1tk7/2CA8g0tg/1JuEE0q7bSC2d1ptQ7eVE6570XVwCvSsmxrSyUzBmTMff8V+fA1o7vVFKA6p+4w9vQ5rPGCKs494LHsNcOu4HiiIymmn81+S0zGyuChgtdK+S2ehonxgAW2rP2c+jQq1GghtWO+uOsH3vObtCblUXLACLpYWEKO65Fv5R3fKTg6Vr7MAB49xKFYW0Gp+gSaGsLkv0DqHs/2p2Lq3hwEB1FI+Nxp5Y761sNgm8x5CGhJ6MB0Cl43dNsUJkDtGWrSFA9o7ApodLQmorWgpbqw4Hqm2xd9Xr/XeTMlHDfWmigxKrCL286MRnp2jbVmiqTZ8omREWZO5iaMoNeejiNr6HTwhnp6BxVrfH7MMee5AcZDUCb7KFtWCxaJ06W3anK60BGiEeCfpkswrddtL/GOWuFxtM81zfSv9wufISnVst0uO+Ad+JhLZ//p3NB/cOFcQgId3dAK2eR3ZeprcXYg839Jpw0KaV0V+TweUYnmYwVipq31+QGsK8HkZteIPZFJGSiAV3U7LbTHw+OSNucg+19uqZ74vRTe6Z3OH5PR0Zi25w6uuR5WWewrxLU6rgnQZULuKJ7pG64O9yZl/qkDnHcSiBRl7NAKUhGWBHQ2QIGs0buIBD3CRHTiTygh/BRh6pB2YJlFWCX9C+VFmRZinS3cHV2X/oxeGzcbWR+9B59IrUhJRV7raTpybsZJE0BMsP//hSom9f1i2+aWYko3LOcQUyQo9eHlDq/RzDNE99bNr3prt57uplB4eskVHLmpVN3Ur3jFhYN4ChtUUdB662fcKT4EGyem/BAvEep2Q2/l/U8BCw=="}, {"enc": true, "cert": true, "data": "aBXHpikiHtDtbM2Q8KvtHIfIwZ+MhQ+DNdr95HHZmVBIW+nmy5/FR6dsqvU0u9QTm22chm6PvbFnb72DFY4Ap89BeqQqv+DvFJ/Ngl0OvJhuf8wz0DRQwllmYN7oxQ/N/SIY98E6KqtbqaUgyb9NElb83oaUHIIGxwbdJvLIBxuY"}]</script>
+
+<script>
+"use strict";
+const SALT = "ironwall::";
+
+/* ---------- pure-JS SHA-256 (works offline over file://) ---------- */
+const K256 = new Uint32Array([
+ 0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+ 0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+ 0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+ 0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+ 0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+ 0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+ 0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+ 0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2]);
+function rotr(x,n){return (x>>>n)|(x<<(32-n));}
+function sha256bytes(msg){
+  let H=new Uint32Array([0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]);
+  const l=msg.length, bitLen=l*8, withOne=l+1;
+  const pad=(56-(withOne%64)+64)%64, total=withOne+pad+8;
+  const m=new Uint8Array(total); m.set(msg,0); m[l]=0x80;
+  const dv=new DataView(m.buffer);
+  dv.setUint32(total-8, Math.floor(bitLen/0x100000000));
+  dv.setUint32(total-4, bitLen>>>0);
+  const w=new Uint32Array(64);
+  for(let i=0;i<total;i+=64){
+    for(let t=0;t<16;t++) w[t]=dv.getUint32(i+t*4);
+    for(let t=16;t<64;t++){
+      const s0=rotr(w[t-15],7)^rotr(w[t-15],18)^(w[t-15]>>>3);
+      const s1=rotr(w[t-2],17)^rotr(w[t-2],19)^(w[t-2]>>>10);
+      w[t]=(w[t-16]+s0+w[t-7]+s1)>>>0;
+    }
+    let a=H[0],b=H[1],c=H[2],d=H[3],e=H[4],f=H[5],g=H[6],h=H[7];
+    for(let t=0;t<64;t++){
+      const S1=rotr(e,6)^rotr(e,11)^rotr(e,25);
+      const ch=(e&f)^((~e)&g);
+      const t1=(h+S1+ch+K256[t]+w[t])>>>0;
+      const S0=rotr(a,2)^rotr(a,13)^rotr(a,22);
+      const maj=(a&b)^(a&c)^(b&c);
+      const t2=(S0+maj)>>>0;
+      h=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;
+    }
+    H[0]=(H[0]+a)>>>0;H[1]=(H[1]+b)>>>0;H[2]=(H[2]+c)>>>0;H[3]=(H[3]+d)>>>0;
+    H[4]=(H[4]+e)>>>0;H[5]=(H[5]+f)>>>0;H[6]=(H[6]+g)>>>0;H[7]=(H[7]+h)>>>0;
+  }
+  const out=new Uint8Array(32), odv=new DataView(out.buffer);
+  for(let i=0;i<8;i++) odv.setUint32(i*4,H[i]);
+  return out;
+}
+const enc=new TextEncoder(), dec=new TextDecoder();
+function sha256hex(str){return Array.from(sha256bytes(enc.encode(str))).map(b=>b.toString(16).padStart(2,'0')).join('');}
+function normalize(s){return (s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');}
+function keystream(key,len){
+  const out=new Uint8Array(len); let filled=0,k=0;
+  while(filled<len){
+    const block=sha256bytes(enc.encode(key+'|'+k));
+    for(let j=0;j<32 && filled<len;j++,filled++) out[filled]=block[j];
+    k++;
+  }
+  return out;
+}
+function decrypt(b64,answer){
+  const key=normalize(answer);
+  const bin=atob(b64); const ct=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) ct[i]=bin.charCodeAt(i);
+  const ks=keystream(key,ct.length);
+  const pt=new Uint8Array(ct.length);
+  for(let i=0;i<ct.length;i++) pt[i]=ct[i]^ks[i];
+  return dec.decode(pt);
+}
+
+/* ---------- runtime ---------- */
+const PAYLOADS=JSON.parse(document.getElementById('payloads').textContent);
+const ROOM_COUNT=4;
+let idx=0;
+let room=JSON.parse(PAYLOADS[0].data);
+
+const $=id=>document.getElementById(id);
+function paintLocks(){
+  const box=$('locks'); box.innerHTML='';
+  for(let i=0;i<ROOM_COUNT;i++){
+    const el=document.createElement('div');
+    el.className='lock'+(i<idx?' done':'')+(i===idx?' current':'');
+    el.innerHTML=(i<idx?'🔓':'🔒')+'<span class="n">'+(i+1)+'</span>';
+    box.appendChild(el);
+  }
+}
+function accent(color){
+  document.documentElement.style.setProperty('--accent',color);
+  $('panelTop').style.background=color;
+}
+function renderRoom(){
+  accent(room.color||'#7c6cfa');
+  $('seal').textContent=room.seal;
+  $('body').innerHTML=room.body;
+  $('answerArea').style.display='';
+  $('answer').value=''; $('answer').focus();
+  $('feedback').textContent=''; $('feedback').className='feedback';
+  $('hintBox').style.display='none'; $('hintBox').textContent=room.hint;
+  paintLocks();
+}
+function win(certObj){
+  accent('#2bb97a');
+  $('seal').textContent='VAULT OPEN';
+  $('body').innerHTML=
+    '<div class="win">'+
+    '<div class="big">🏰 The Ironwall is yours.</div>'+
+    '<p>All four seals broken — encapsulation, inheritance, polymorphism, and your own game.</p>'+
+    '<p style="font-size:.82rem;color:var(--dim);margin-bottom:8px;">Your completion code:</p>'+
+    '<div class="cert">'+certObj.code+'</div>'+
+    '<p style="font-size:.82rem;color:var(--dim);margin-top:12px;">'+certObj.line+'</p>'+
+    '</div>';
+  $('answerArea').style.display='none';
+  idx=ROOM_COUNT; paintLocks();
+}
+function submit(){
+  const raw=$('answer').value;
+  if(!normalize(raw)){ return; }
+  const guessHash=sha256hex(SALT+normalize(raw));
+  if(guessHash===room.hash){
+    // correct — decrypt the next payload with this answer
+    const next=PAYLOADS[idx+1];
+    const plain=decrypt(next.data, raw);
+    let obj; try{ obj=JSON.parse(plain); }catch(e){ obj=null; }
+    if(next.cert){ win(obj); return; }
+    idx++; room=obj;
+    $('feedback').className='feedback ok'; $('feedback').textContent='Seal broken. The next room unlocks…';
+    setTimeout(renderRoom,650);
+  } else {
+    const inp=$('answer'); inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
+    $('feedback').className='feedback bad';
+    $('feedback').textContent='The seal holds firm. Check your answer and try again.';
+  }
+}
+$('submit').addEventListener('click',submit);
+$('answer').addEventListener('keydown',e=>{ if(e.key==='Enter') submit(); });
+$('hintBtn').addEventListener('click',()=>{
+  const hb=$('hintBox'); hb.style.display = hb.style.display==='none'?'block':'none';
+});
+function resetGame(){
+  idx=0; room=JSON.parse(PAYLOADS[0].data);
+  renderRoom();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+$('resetBtn').addEventListener('click',resetGame);
+renderRoom();
+</script>
+</body>
+</html>
