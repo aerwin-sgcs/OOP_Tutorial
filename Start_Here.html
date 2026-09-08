@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python OOP — Start Here</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e14;
+    --bg2: #14141e;
+    --border: #2a2a3e;
+    --text: #c8c8e0;
+    --dim: #6060808;
+    --white: #f0eff8;
+    --c1: #7c6cfa;   /* inherit — purple */
+    --c2: #2bb97a;   /* poly — green */
+    --c3: #f07c30;   /* encap — orange */
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    padding: 80px 40px 64px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .hero-kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--c1);
+    letter-spacing: 3px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-kicker::before {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 1px;
+    background: var(--c1);
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    line-height: 1.0;
+    color: var(--white);
+    margin-bottom: 24px;
+    letter-spacing: -1px;
+  }
+
+  .hero-title .oop {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--white);
+  }
+
+  .hero-body {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--text);
+    max-width: 540px;
+    margin-bottom: 40px;
+  }
+
+  .hero-steps {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .step-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 1px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: #9090b0;
+  }
+
+  /* ---- CARDS ---- */
+  .cards-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+    transition: transform 0.2s, border-color 0.2s;
+    position: relative;
+  }
+
+  .card:hover { transform: translateY(-4px); }
+  .card[data-c="1"]:hover { border-color: var(--c1); }
+  .card[data-c="2"]:hover { border-color: var(--c2); }
+  .card[data-c="3"]:hover { border-color: var(--c3); }
+
+  .card-top {
+    height: 5px;
+  }
+
+  .card[data-c="1"] .card-top { background: var(--c1); }
+  .card[data-c="2"] .card-top { background: var(--c2); }
+  .card[data-c="3"] .card-top { background: var(--c3); }
+
+  .card-inner {
+    padding: 26px 26px 28px;
+  }
+
+  .card-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+  }
+
+  .card[data-c="1"] .card-num { color: var(--c1); }
+  .card[data-c="2"] .card-num { color: var(--c2); }
+  .card[data-c="3"] .card-num { color: var(--c3); }
+
+  .card-concept {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--white);
+    margin-bottom: 6px;
+    line-height: 1.1;
+  }
+
+  .card-theme {
+    font-size: 0.82rem;
+    color: #6060808;
+    color: #70708a;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  .card-what {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: var(--text);
+    margin-bottom: 22px;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    padding: 3px 9px;
+    border-radius: 4px;
+    background: #1e1e2e;
+    border: 1px solid var(--border);
+    color: #9090aa;
+  }
+
+  .card-cta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.5px;
+  }
+
+  .card[data-c="1"] .card-cta { color: var(--c1); }
+  .card[data-c="2"] .card-cta { color: var(--c2); }
+  .card[data-c="3"] .card-cta { color: var(--c3); }
+
+  .cta-arrow {
+    width: 22px;
+    height: 1px;
+    position: relative;
+    background: currentColor;
+    transition: width 0.2s;
+  }
+
+  .cta-arrow::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -3px;
+    border: 4px solid transparent;
+    border-left-color: currentColor;
+  }
+
+  .card:hover .cta-arrow { width: 32px; }
+
+  /* ---- HOW IT WORKS ---- */
+  .how {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+  }
+
+  .how-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--white);
+    margin-bottom: 24px;
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .how-item {
+    background: var(--bg2);
+    padding: 20px 22px;
+  }
+
+  .how-n {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--border);
+    margin-bottom: 8px;
+  }
+
+  .how-label {
+    font-size: 0.88rem;
+    color: var(--white);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .how-desc {
+    font-size: 0.8rem;
+    color: #70708a;
+    line-height: 1.55;
+  }
+
+  /* ---- REFERENCE LINK ---- */
+  .ref-bar {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+  }
+
+  .ref-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 26px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+
+  .ref-link:hover { border-color: #5050708; border-color: #505078; }
+
+  .ref-left { display: flex; align-items: center; gap: 16px; }
+
+  .ref-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  .ref-text-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    color: var(--white);
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+  }
+
+  .ref-text-desc {
+    font-size: 0.8rem;
+    color: #70708a;
+  }
+
+  .ref-arrow {
+    font-size: 1.2rem;
+    color: #505078;
+    flex-shrink: 0;
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 560px) {
+    .hero { padding: 52px 24px 40px; }
+    .cards-wrap { padding: 0 24px 60px; }
+    .how { padding: 0 24px 60px; }
+    .ref-bar { padding: 0 24px 60px; }
+    .hero-title { font-size: 2.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-kicker">Python · Object-Oriented Programming</div>
+  <h1 class="hero-title">Learn <span class="oop">OOP</span><br>one concept<br>at a time.</h1>
+  <p class="hero-body">Three interactive tutorials. Each one teaches a single OOP concept using a theme you actually care about. Work through them in any order — each one stands completely on its own.</p>
+  <div class="hero-steps">
+    <div class="step-pill">Read the concepts</div>
+    <div class="step-pill">Answer the checkpoints</div>
+    <div class="step-pill">Try the interactive exercises</div>
+    <div class="step-pill">Download the Python file</div>
+    <div class="step-pill">Attempt the challenges</div>
+  </div>
+</div>
+
+<div class="cards-wrap">
+
+  <a class="card" data-c="1" href="Inheritance_tutorial.html">
+    <div class="card-top"></div>
+    <div class="card-inner">
+      <div class="card-num">TUTORIAL 01</div>
+      <div class="card-concept">Inheritance</div>
+      <div class="card-theme">⚔️ Fantasy game characters</div>
+      <div class="card-what">How classes can pass on their attributes and methods to child classes — so you write code once and reuse it everywhere.</div>
+      <div class="card-tags">
+        <span class="tag">parent class</span>
+        <span class="tag">child class</span>
+        <span class="tag">super()</span>
+        <span class="tag">override</span>
+        <span class="tag">DRY principle</span>
+      </div>
+      <div class="card-cta">
+        Open tutorial <div class="cta-arrow"></div>
+      </div>
+    </div>
+  </a>
+
+  <a class="card" data-c="2" href="Polymorphism_tutorial.html">
+    <div class="card-top"></div>
+    <div class="card-inner">
+      <div class="card-num">TUTORIAL 02</div>
+      <div class="card-concept">Polymorphism</div>
+      <div class="card-theme">🎵 Musical instruments</div>
+      <div class="card-what">How different classes can share the same method name but each do something completely different when that method is called.</div>
+      <div class="card-tags">
+        <span class="tag">same name</span>
+        <span class="tag">different behaviour</span>
+        <span class="tag">override</span>
+        <span class="tag">play()</span>
+      </div>
+      <div class="card-cta">
+        Open tutorial <div class="cta-arrow"></div>
+      </div>
+    </div>
+  </a>
+
+  <a class="card" data-c="3" href="Encapsulation_tutorial.html">
+    <div class="card-top"></div>
+    <div class="card-inner">
+      <div class="card-num">TUTORIAL 03</div>
+      <div class="card-concept">Encapsulation</div>
+      <div class="card-theme">🏀 Basketball — Australian NBL</div>
+      <div class="card-what">How classes control access to their data — deciding what is public, what is protected, and what is completely private.</div>
+      <div class="card-tags">
+        <span class="tag">public</span>
+        <span class="tag">protected _</span>
+        <span class="tag">private __</span>
+        <span class="tag">getter</span>
+        <span class="tag">setter</span>
+      </div>
+      <div class="card-cta">
+        Open tutorial <div class="cta-arrow"></div>
+      </div>
+    </div>
+  </a>
+
+</div>
+
+<div class="how">
+  <div class="how-title">How each tutorial works</div>
+  <div class="how-grid">
+    <div class="how-item">
+      <div class="how-n">01</div>
+      <div class="how-label">Read the concept</div>
+      <div class="how-desc">Plain English explanation with real-world analogies before any code appears.</div>
+    </div>
+    <div class="how-item">
+      <div class="how-n">02</div>
+      <div class="how-label">Pass the checkpoint</div>
+      <div class="how-desc">Answer a question to unlock the next page. Retry as many times as you need.</div>
+    </div>
+    <div class="how-item">
+      <div class="how-n">03</div>
+      <div class="how-label">Try the exercises</div>
+      <div class="how-desc">Predict what code will print. Fill in a missing line. Get instant feedback.</div>
+    </div>
+    <div class="how-item">
+      <div class="how-n">04</div>
+      <div class="how-label">Download and run</div>
+      <div class="how-desc">Get the complete Python file, open it in PyCharm, and try the extension challenges.</div>
+    </div>
+  </div>
+</div>
+
+<div class="ref-bar">
+  <a class="ref-link" href="OOP_Reference_Sheet.html">
+    <div class="ref-left">
+      <div class="ref-icon">📋</div>
+      <div>
+        <div class="ref-text-title">OOP Reference Sheet</div>
+        <div class="ref-text-desc">All three concepts, key terms, and syntax on one page</div>
+      </div>
+    </div>
+    <div class="ref-arrow">→</div>
+  </a>
+</div>
+
+</body>
+</html>
