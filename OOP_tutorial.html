@@ -1626,7 +1626,7 @@ function renderTutorial() {
   }
 
   // Before-you-continue prompt — shown on coding steps and reading steps (not recap/summary)
-  const showBeforeContinue = (stepType === 'code' || stepType === 'read') && !isFirst;
+  const showBeforeContinue = (stepType === 'code' || stepType === 'read') && !isFirst && !(step.quiz && step.quiz.length);
   const beforeContinueText = stepType === 'code'
     ? '<strong>Before clicking Next:</strong> have you typed this code into study_aid.py and run it successfully? If you got an error, read the error message — it tells you exactly what is wrong and on which line.'
     : '<strong>Before clicking Next:</strong> do you understand the concept on this step? If anything is unclear, re-read it or check the Glossary. It is fine to stay on a step as long as you need.';
